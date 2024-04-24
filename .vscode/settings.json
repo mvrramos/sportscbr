@@ -1,0 +1,13 @@
+{
+    "tabnine.experimentalAutoImports": false,
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorTheme": "Night Wolf (black) (No Italics)",
+    "files.autoSave": "afterDelay",
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "always"
+    },
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.wordWrap": "on",
+    "editor.minimap.autohide": true,
+    "editor.fontLigatures": false
+}

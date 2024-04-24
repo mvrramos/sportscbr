@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "287447492369",
+    "firebase_url": "https://projetomobile-35311-default-rtdb.firebaseio.com",
+    "project_id": "projetomobile-35311",
+    "storage_bucket": "projetomobile-35311.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287447492369:android:abfc5107da750cc4490eb0",
+        "android_client_info": {
+          "package_name": "com.example.projetomobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "287447492369-jakvicabqalu1h0vnqopdaf9djcndnog.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_PnvQdwPrElfmWMD5Gsr-ZfjmBH3WTEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "287447492369-jakvicabqalu1h0vnqopdaf9djcndnog.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "287447492369-9npjvec737qg32mrpv60ci7dmus9a6g3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.projetomobile"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287447492369:android:d7d16defe082451b490eb0",
+        "android_client_info": {
+          "package_name": "com.example.sportscbr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "287447492369-jakvicabqalu1h0vnqopdaf9djcndnog.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_PnvQdwPrElfmWMD5Gsr-ZfjmBH3WTEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "287447492369-jakvicabqalu1h0vnqopdaf9djcndnog.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "287447492369-9npjvec737qg32mrpv60ci7dmus9a6g3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.projetomobile"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
