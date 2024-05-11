@@ -49,6 +49,9 @@ dependencies:
   provider: ^6.1.2
   firebase_storage: ^11.6.11
   flutter_launcher_icons: ^0.13.1
+  carousel_slider: ^4.2.1
+  cached_network_image: ^3.3.1
+  url_launcher: ^6.2.6
   
 dev_dependencies:
   flutter_test:

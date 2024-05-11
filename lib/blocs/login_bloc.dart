@@ -9,10 +9,10 @@ import 'package:rxdart/rxdart.dart';
 
 mixin LoginValidator {
   final validateEmail = StreamTransformer<String, String>.fromHandlers(handleData: (email, sink) {
-    if (email.contains("@")) {
+    if (email.contains("@") && email.length > 6) {
       sink.add(email);
     } else {
-      sink.addError("Insira um e-mail válido");
+      sink.addError("Email inváldo");
     }
   });
 
@@ -20,7 +20,7 @@ mixin LoginValidator {
     if (password.length > 5) {
       sink.add(password);
     } else {
-      sink.addError("Senha deve conter ao menos 6 caracteres ");
+      sink.addError("A senha deve ter pelo menos 6 caracteres");
     }
   });
 }
@@ -34,6 +34,7 @@ class LoginBloc extends BlocBase with LoginValidator {
   Stream<String> get outPassword => _passwordController.stream.transform(validatePassword);
   Stream<LoginState> get outState => _stateController.stream;
   Stream<bool> get outSubmitValue => Rx.combineLatest2(outEmail, outPassword, (a, b) => true);
+
   late StreamSubscription _streamSubscription;
 
   Function(String) get changeEmail => _emailController.sink.add;
@@ -54,20 +55,21 @@ class LoginBloc extends BlocBase with LoginValidator {
     });
   }
 
-  void submit() {
+  Future<void> submit() async {
     final email = _emailController.value;
     final password = _passwordController.value;
 
     _stateController.add(LoginState.loading);
 
-    FirebaseAuth.instance
-        .signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    )
-        .catchError((error) {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      _stateController.add(LoginState.success);
+    } catch (error) {
       _stateController.add(LoginState.fail);
-    });
+    }
   }
 
   Future<bool> verifyPrivileges(user) async {
@@ -76,6 +78,12 @@ class LoginBloc extends BlocBase with LoginValidator {
     }).catchError((error) {
       return false;
     });
+  }
+
+  void recoverPassword() {
+    final email = _emailController.value;
+
+    FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 
   @override

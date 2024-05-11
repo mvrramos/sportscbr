@@ -20,6 +20,7 @@ class AdminOrdersBloc extends BlocBase {
 
   AdminOrdersBloc() {
     _addAdminOrdersListener();
+    
   }
 
   void _addAdminOrdersListener() {
@@ -84,7 +85,7 @@ class AdminOrdersBloc extends BlocBase {
     _adminOrdersController.add(_adminOrders);
   }
 
-  void addCategoryOfProducts() {}
+  void removeOrders() {}
 
   @override
   void dispose() {

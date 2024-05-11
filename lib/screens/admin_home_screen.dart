@@ -7,7 +7,6 @@ import 'package:sportscbr/screens/login_screen.dart';
 import 'package:sportscbr/tabs/admin_clientes_tab.dart';
 import 'package:sportscbr/tabs/admin_orders_tab.dart';
 import 'package:sportscbr/tabs/admin_products_tab.dart';
-import 'package:sportscbr/widgets/admin_edit_category.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -156,10 +155,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       case 2:
         return FloatingActionButton(
           onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => const AdminEditCategoryDialog(),
-            );
+            // showDialog(
+            //   context: context,
+            //   builder: (context) => const AdminEditCategoryDialog(),
+            // );
           },
           backgroundColor: Colors.white,
           child: const Icon(Icons.add),

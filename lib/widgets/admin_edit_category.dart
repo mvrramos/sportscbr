@@ -61,7 +61,7 @@ class _AdminEditCategoryDialogState extends State<AdminEditCategoryDialog> {
                     return TextField(
                       controller: _controller,
                       onChanged: _adminCategoryBloc.setTitle,
-                      decoration: InputDecoration(errorText: snapshot.hasError ? snapshot.error!.toString() : null),
+                      decoration: InputDecoration(errorText: snapshot.hasError ? snapshot.error?.toString() : null),
                     );
                   }),
             ),

@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -45,7 +42,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCyDprLjyQHgnIbOpVHKXxP1-UCCwG9GsI',
-    appId: '1:287447492369:web:f3b123e83eeb3018490eb0',
+    appId: '1:287447492369:web:a04f714bf3f9fc8c490eb0',
     messagingSenderId: '287447492369',
     projectId: 'projetomobile-35311',
     authDomain: 'projetomobile-35311.firebaseapp.com',
@@ -74,11 +71,22 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAOduRgncisHXWa0SHNvamXcwvgiBBk6l0',
-    appId: '1:287447492369:ios:e56f73400802d8c8490eb0',
+    appId: '1:287447492369:ios:f26223ee6375166d490eb0',
     messagingSenderId: '287447492369',
     projectId: 'projetomobile-35311',
     databaseURL: 'https://projetomobile-35311-default-rtdb.firebaseio.com',
     storageBucket: 'projetomobile-35311.appspot.com',
-    iosBundleId: 'com.example.sportscbr.RunnerTests',
+    iosBundleId: 'com.example.sportscbr',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCyDprLjyQHgnIbOpVHKXxP1-UCCwG9GsI',
+    appId: '1:287447492369:web:21f5a8b59e387de1490eb0',
+    messagingSenderId: '287447492369',
+    projectId: 'projetomobile-35311',
+    authDomain: 'projetomobile-35311.firebaseapp.com',
+    databaseURL: 'https://projetomobile-35311-default-rtdb.firebaseio.com',
+    storageBucket: 'projetomobile-35311.appspot.com',
+  );
+
 }

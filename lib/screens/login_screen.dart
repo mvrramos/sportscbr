@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sportscbr/blocs/login_bloc.dart';
 import 'package:sportscbr/screens/admin_home_screen.dart';
+import 'package:sportscbr/screens/home_screen.dart';
+import 'package:sportscbr/screens/recover_password.dart';
+import 'package:sportscbr/screens/signup_screen.dart';
 import 'package:sportscbr/widgets/input_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,7 +27,11 @@ class _LoginScreenState extends State<LoginScreen> {
             "Realizar cadastro",
             style: TextStyle(fontSize: 16),
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const SignUpScreen(),
+            ));
+          },
         ),
       ),
       backgroundColor: Colors.black,
@@ -67,7 +75,32 @@ class _LoginScreenState extends State<LoginScreen> {
                               return SizedBox(
                                 height: 50,
                                 child: ElevatedButton(
-                                  onPressed: snapshot.hasData ? _loginBloc.submit : null,
+                                  onPressed: snapshot.hasData
+                                      ? () {
+                                          // Obter usuário atualmente autenticado
+                                          User? currentUser = FirebaseAuth.instance.currentUser;
+                                          if (currentUser != null) {
+                                            // Ver previlegios
+                                            _loginBloc.verifyPrivileges(currentUser).then((uid) {
+                                              if (uid == currentUser.uid.toString()) {
+                                                // Redirecionar para a tela de administração
+                                                Navigator.of(context).pushReplacement(
+                                                  MaterialPageRoute(
+                                                    builder: (context) => const AdminHomeScreen(),
+                                                  ),
+                                                );
+                                              }
+                                            });
+                                          } else {
+                                            // Redirecionar para a tela inicial
+                                            Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                                builder: (context) => HomeScreen(),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      : null,
                                   style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(100, 73, 5, 182)),
                                   child: const Text(
                                     "Entrar",
@@ -78,7 +111,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                           ),
                           const SizedBox(height: 15),
-                          TextButton(onPressed: () {}, child: const Text("Recuperar senha"))
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const RecoverPassword(),
+                                ));
+                              },
+                              child: const Text("Recuperar senha"))
                         ],
                       ),
                     ),

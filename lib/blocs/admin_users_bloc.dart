@@ -40,6 +40,24 @@ class AdminUsersBloc extends BlocBase {
     });
   }
 
+  // Verifica se o usuário é um administrador
+  Future<bool> isAdmin(String uid) async {
+    try {
+      // Obter documento do usuário na coleção /admin/uid
+      DocumentSnapshot adminDoc = await _firestore.collection('admin').doc(uid).get();
+
+      // Verificar se o documento existe e se o campo 'isAdmin' é true
+      if (adminDoc.exists && adminDoc['isAdmin'] == true) {
+        return true; // Usuário é um administrador
+      } else {
+        return false; // Usuário não é um administrador
+      }
+    } catch (e) {
+      print('Erro ao verificar se o usuário é administrador: $e');
+      return false; // Em caso de erro, considerar como não administrador
+    }
+  }
+
   void _subscribeToOrders(uid) {
     _users[uid]?['subscription'] = _firestore.collection('users').doc(uid).collection('orders').snapshots().listen((orders) async {
       int numOrders = orders.docs.length;

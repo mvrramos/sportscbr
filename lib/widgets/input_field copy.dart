@@ -17,14 +17,21 @@ class InputField extends StatelessWidget {
         return TextField(
           onChanged: onChanged,
           decoration: InputDecoration(
-            errorText: snapshot.error?.toString(),
-            contentPadding: const EdgeInsets.only(left: 5, right: 30, top: 40, bottom: 30),
             icon: Icon(icon, color: Colors.white),
             hintText: hint,
             hintStyle: const TextStyle(color: Colors.white),
             focusedBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
+              borderSide: BorderSide(
+                color: Color.fromARGB(100, 73, 5, 182),
+              ),
             ),
+            contentPadding: const EdgeInsets.only(
+              left: 5,
+              right: 30,
+              bottom: 30,
+              top: 30,
+            ),
+            errorText: snapshot.hasError ? snapshot.error as String : null,
           ),
           style: const TextStyle(color: Colors.white),
           obscureText: obscure,
