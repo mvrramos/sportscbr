@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sportscbr/blocs/user_bloc.dart';
+import 'package:sportscbr/blocs/Client/cart_bloc.dart';
+import 'package:sportscbr/blocs/Client/login_bloc.dart';
 import 'package:sportscbr/firebase_options.dart';
-import 'package:sportscbr/screens/login_screen.dart';
+import 'package:sportscbr/screens/Client/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,8 +13,11 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UserBloc()),
-        // ChangeNotifierProvider(create: (_) => CartBloc()),
+        ChangeNotifierProvider(create: (_) => LoginBloc()),
+        ChangeNotifierProvider(create: (_) => LoginBloc()),
+        ChangeNotifierProvider(
+          create: (context) => CartBloc(Provider.of<LoginBloc>(context, listen: false)),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -25,9 +29,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: HomeScreen(),
     );
   }
 }

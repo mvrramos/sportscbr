@@ -1,106 +1,105 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter/material.dart';
+// import 'package:scoped_model/scoped_model.dart';
 
-class UserModel extends Model {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+// class UserModel extends Model {
+//   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  User? firebaseUser;
-  Map<String, dynamic> userData = {};
-  bool isLoading = false;
+//   User? firebaseUser;
+//   Map<String, dynamic> userData = {};
 
-  static UserModel of(BuildContext context) => ScopedModel.of<UserModel>(context);
+//   bool isLoading = false;
 
-  @override
-  void addListener(VoidCallback listener) {
-    super.addListener(listener);
-    _loadCurrentUser();
-  }
+//   static UserModel of(BuildContext context) => ScopedModel.of<UserModel>(context);
 
-  Future<void> signUp({
-    required Map<String, dynamic> userData,
-    required String pass,
-    required VoidCallback onSuccess,
-    required VoidCallback onFail,
-  }) async {
-    isLoading = true;
-    notifyListeners();
+//   @override
+//   void addListener(VoidCallback listener) {
+//     super.addListener(listener);
+//     _loadCurrentUser();
+//   }
 
-    try {
-      final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: userData['email'],
-        password: pass,
-      );
+//   Future<void> signUp({
+//     required Map<String, dynamic> userData,
+//     required String pass,
+//     required VoidCallback onSuccess,
+//     required VoidCallback onFail,
+//   }) async {
+//     isLoading = true;
+//     notifyListeners();
 
-      firebaseUser = userCredential.user!;
+//     try {
+//       final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+//         email: userData['email'],
+//         password: pass,
+//       );
 
-      await _saveUserData(userData);
+//       firebaseUser = userCredential.user!;
 
-      onSuccess();
-    } catch (error) {
-      onFail();
-    }
+//       await _saveUserData(userData);
 
-    isLoading = false;
-    notifyListeners();
-  }
+//       onSuccess();
+//     } catch (error) {
+//       onFail();
+//     }
 
-  void signIn({required String email, required String pass, required VoidCallback onSucess, required VoidCallback onFail}) async {
-    isLoading = true;
-    notifyListeners();
+//     isLoading = false;
+//     notifyListeners();
+//   }
 
-    _auth.signInWithEmailAndPassword(email: email, password: pass).then((userCredential) async {
-      firebaseUser = userCredential.user!;
+//   void signIn({required String email, required String pass, required VoidCallback onSucess, required VoidCallback onFail}) async {
+//     isLoading = true;
+//     notifyListeners();
 
-      await _loadCurrentUser();
+//     _auth.signInWithEmailAndPassword(email: email, password: pass).then((userCredential) async {
+//       firebaseUser = userCredential.user!;
 
-      onSucess();
-      isLoading = false;
-      notifyListeners();
-    }).catchError((e) {
-      onFail();
-      isLoading = false;
-      notifyListeners();
-    });
-  }
+//       await _loadCurrentUser();
 
-  void signOut() async {
-    await _auth.signOut();
+//       onSucess();
+//       isLoading = false;
+//       notifyListeners();
+//     }).catchError((e) {
+//       onFail();
+//       isLoading = false;
+//       notifyListeners();
+//     });
+//   }
 
-    userData = {};
-    firebaseUser = null;
+//   void signOut() async {
+//     await _auth.signOut();
 
-    notifyListeners();
-  }
+//     userData = {};
+//     firebaseUser = null;
 
-  bool isLoggedIn() {
-    return firebaseUser != null;
-  }
+//     notifyListeners();
+//   }
 
-  void recoverPass(String email) {
-    _auth.sendPasswordResetEmail(email: email);
-  }
+//   bool isLoggedIn() {
+//     return firebaseUser != null;
+//   }
 
-  Future<void> _saveUserData(Map<String, dynamic> userData) async {
-    this.userData = userData;
+//   void recoverPass(String email) {
+//     _auth.sendPasswordResetEmail(email: email);
+//   }
 
-    final userDocRef = FirebaseFirestore.instance.collection('users').doc(firebaseUser!.uid);
+//   Future<void> _saveUserData(Map<String, dynamic> userData) async {
+//     this.userData = userData;
 
-    await userDocRef.set(userData);
-  }
+//     final userDocRef = FirebaseFirestore.instance.collection('users').doc(firebaseUser!.uid);
 
-  Future<void> _loadCurrentUser() async {
-    firebaseUser ??= _auth.currentUser;
+//     await userDocRef.set(userData);
+//   }
 
-    if (firebaseUser != null) {
-      DocumentSnapshot docUser = await FirebaseFirestore.instance.collection('users').doc(firebaseUser!.uid).get();
+//   Future<void> _loadCurrentUser() async {
+//     firebaseUser ??= _auth.currentUser;
 
-      if (docUser.exists) {
-        userData = docUser.data() as Map<String, dynamic>;
-      }
-    }
-
-    notifyListeners();
-  }
-}
+//     if (firebaseUser != null) {
+//       if (userData["name"] == null) {
+//         DocumentSnapshot docUser = await FirebaseFirestore.instance.collection('users').doc(firebaseUser!.uid).get();
+//         userData = docUser.data() as Map<String, dynamic>;
+//       }
+//     }
+//     notifyListeners();
+//   }
+// }

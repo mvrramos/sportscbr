@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sportscbr/blocs/product_bloc.dart';
+import 'package:sportscbr/datas/product_data.dart';
 
 class CartProduct {
   late String cid;
@@ -10,7 +10,7 @@ class CartProduct {
 
   late ProductData productData;
 
-  CartProduct(sizes);
+  CartProduct();
 
   CartProduct.fromDocument(DocumentSnapshot document) {
     cid = document.id;
