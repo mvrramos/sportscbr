@@ -17,7 +17,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(100, 73, 5, 182),
+        backgroundColor: const Color.fromARGB(150, 73, 5, 182),
         foregroundColor: Colors.white,
         title: const Text(
           "Realizar cadastro",

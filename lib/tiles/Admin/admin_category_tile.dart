@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sportscbr/screens/Admin/admin_product_screen.dart';
-import 'package:sportscbr/widgets/Admin/admin_edit_category.dart';
+import 'package:sportscbr/widgets/Admin/admin_edit_category_dialog.dart';
 
 class AdminCategoryTile extends StatelessWidget {
   final DocumentSnapshot category;
@@ -32,8 +32,8 @@ class AdminCategoryTile extends StatelessWidget {
             style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
           ),
           children: [
-            FutureBuilder<QuerySnapshot>(
-              future: category.reference.collection(category.id).get(),
+            StreamBuilder<QuerySnapshot>(
+              stream: category.reference.collection(category.id).snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Text("Nenhum produto encontrado");

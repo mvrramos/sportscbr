@@ -78,33 +78,26 @@ class LoginBloc extends BlocBase with LoginValidator {
     });
   }
 
-  Future<void> submit() async {
-    final email = _emailController.value;
-    final password = _passwordController.value;
-
-    _stateController.add(LoginState.loading);
-
+  void submit() async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.value,
+        password: _passwordController.value,
       );
-
-      firebaseUser = userCredential.user;
-      await _loadCurrentUser();
-
-      if (firebaseUser != null) {
-        _stateController.add(LoginState.success);
+    } catch (e) {
+      if (e == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e == 'wrong-password') {
+        print('Wrong password provided for that user.');
       }
-    } catch (error) {
-      _stateController.add(LoginState.fail);
     }
   }
 
   Future<bool> verifyPrivileges(User user) async {
     try {
       DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('admins').doc(user.uid).get();
-      return snapshot.exists; // Retorna true se o documento existir
+
+      return snapshot.exists;
     } catch (error) {
       print("Erro ao verificar privilégios: $error");
       return false;
@@ -116,7 +109,7 @@ class LoginBloc extends BlocBase with LoginValidator {
     _auth.sendPasswordResetEmail(email: email);
   }
 
-  Future<void> signUp({
+  void signUp({
     required Map<String, dynamic> userData,
     required String pass,
     required VoidCallback onSuccess,
@@ -132,7 +125,7 @@ class LoginBloc extends BlocBase with LoginValidator {
 
       firebaseUser = userCredential.user!;
 
-      await _saveUserData(userData);
+      _saveUserData(userData);
 
       onSuccess();
     } catch (error) {
@@ -142,14 +135,14 @@ class LoginBloc extends BlocBase with LoginValidator {
     }
   }
 
-  Future<void> signIn({required String email, required String pass, required VoidCallback onSuccess, required VoidCallback onFail}) async {
+  void signIn({required String email, required String pass, required VoidCallback onSuccess, required VoidCallback onFail}) async {
     _isLoadingController.sink.add(true);
 
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: email, password: pass);
       firebaseUser = userCredential.user!;
 
-      await _loadCurrentUser();
+      _loadCurrentUser();
 
       onSuccess();
     } catch (e) {
@@ -160,7 +153,7 @@ class LoginBloc extends BlocBase with LoginValidator {
   }
 
   void signOut() async {
-    await _auth.signOut();
+    await FirebaseAuth.instance.signOut();
     userData = {};
     firebaseUser = null;
     _ordersController.add([]);
@@ -170,13 +163,13 @@ class LoginBloc extends BlocBase with LoginValidator {
     return firebaseUser != null;
   }
 
-  Future<void> _saveUserData(Map<String, dynamic> userData) async {
+  void _saveUserData(Map<String, dynamic> userData) async {
     this.userData = userData;
     final userDocRef = FirebaseFirestore.instance.collection('users').doc(firebaseUser!.uid);
     await userDocRef.set(userData);
   }
 
-  Future<void> _loadCurrentUser() async {
+  void _loadCurrentUser() async {
     firebaseUser ??= _auth.currentUser;
 
     if (firebaseUser != null) {
@@ -188,7 +181,7 @@ class LoginBloc extends BlocBase with LoginValidator {
     }
   }
 
-  Future<void> _loadOrders() async {
+  void _loadOrders() async {
     if (currentUser != null) {
       final ordersSnapshot = await FirebaseFirestore.instance.collection('users').doc(currentUser!.uid).collection('orders').get();
 
@@ -196,14 +189,20 @@ class LoginBloc extends BlocBase with LoginValidator {
     }
   }
 
+  void deleteOrder(String orderId) async {
+    await FirebaseFirestore.instance.collection('orders').doc(orderId).delete();
+    // Notifique os ouvintes sobre a mudança se necessário
+    notifyListeners();
+  }
+
   @override
   void dispose() {
-    //   _emailController.close();
-    //   _passwordController.close();
-    // _stateController.close();
-    // _streamSubscription.cancel();
-    //   _ordersController.close();
-    //   _isLoadingController.close();
+    // _emailController.close();
+    // _passwordController.close();
+    _stateController.close();
+    _streamSubscription.cancel();
+    _ordersController.close();
+    // _isLoadingController.close();
     super.dispose();
   }
 }

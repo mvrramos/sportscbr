@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_null_comparison, no_logic_in_create_state
-
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,20 +6,24 @@ import 'package:sportscbr/blocs/Admin/admin_category_bloc.dart';
 import 'package:sportscbr/widgets/Admin/admin_source_sheet.dart';
 
 class AdminEditCategoryDialog extends StatefulWidget {
+  final DocumentSnapshot? category;
+
   const AdminEditCategoryDialog(this.category, {super.key});
-  final DocumentSnapshot category;
 
   @override
-  State<AdminEditCategoryDialog> createState() => _AdminEditCategoryDialogState(category);
+  State<AdminEditCategoryDialog> createState() => _AdminEditCategoryDialogState();
 }
 
 class _AdminEditCategoryDialogState extends State<AdminEditCategoryDialog> {
-  final AdminCategoryBloc _adminCategoryBloc;
-  final TextEditingController _controller;
+  late AdminCategoryBloc _adminCategoryBloc;
+  late TextEditingController _controller;
 
-  _AdminEditCategoryDialogState(DocumentSnapshot category)
-      : _adminCategoryBloc = AdminCategoryBloc(category),
-        _controller = TextEditingController(text: category['title'] ?? '');
+  @override
+  void initState() {
+    super.initState();
+    _adminCategoryBloc = AdminCategoryBloc(widget.category);
+    _controller = TextEditingController(text: widget.category != null ? widget.category!['title'] : "");
+  }
 
   @override
   Widget build(BuildContext context) {

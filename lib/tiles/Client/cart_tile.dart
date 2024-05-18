@@ -43,7 +43,7 @@ class CartTile extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.w300),
                   ),
                   Text(
-                    "R\$ ${productData.price.toStringAsFixed(2)}",
+                    "R\$ ${productData.price}",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -83,8 +83,8 @@ class CartTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: cartProduct.productData != null
-          ? FutureBuilder<DocumentSnapshot>(
-              future: FirebaseFirestore.instance.collection('products').doc(cartProduct.category).collection('camisas').doc(cartProduct.pid).get(),
+          ? StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance.collection('products').doc(cartProduct.category).collection('camisas').doc(cartProduct.pid).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   final productData = ProductData.fromDocument(snapshot.data!);
@@ -98,7 +98,7 @@ class CartTile extends StatelessWidget {
                 }
               },
             )
-          : buildContent(cartProduct.productData), // Utilize cartProduct.productData diretamente
+          : Container(), // Remova o buildContent do retorno do StreamBuilder
     );
   }
 }

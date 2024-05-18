@@ -58,6 +58,16 @@ class CartBloc extends BlocBase {
     }
   }
 
+  Future<void> _loadCartItems() async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').get();
+      products = snapshot.docs.map((doc) => CartProduct.fromDocument(doc)).toList();
+      _productsController.add(List.from(products));
+    } catch (e) {
+      print("Erro ao carregar itens do carrinho: $e");
+    }
+  }
+
   void decProduct(CartProduct cartProduct) {
     cartProduct.quantity--;
     updateCartItem(cartProduct);
@@ -79,7 +89,7 @@ class CartBloc extends BlocBase {
   }
 
   double getProductsPrice() {
-    return products.fold(0.0, (total, current) => total + (current.quantity * current.productData.price));
+    return products.fold(0.0, (total, current) => total + (current.quantity * current.productData!.price));
   }
 
   double getDiscountPrice() {
@@ -133,16 +143,6 @@ class CartBloc extends BlocBase {
       _isLoadingController.add(false);
       print("Erro ao finalizar o pedido: $e");
       return null;
-    }
-  }
-
-  Future<void> _loadCartItems() async {
-    try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').get();
-      products = snapshot.docs.map((doc) => CartProduct.fromDocument(doc)).toList();
-      _productsController.add(List.from(products));
-    } catch (e) {
-      print("Erro ao carregar itens do carrinho: $e");
     }
   }
 

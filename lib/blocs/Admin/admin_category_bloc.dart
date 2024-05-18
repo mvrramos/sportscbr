@@ -26,18 +26,20 @@ class AdminCategoryBloc extends BlocBase {
   Stream get outImage => _imageController.stream;
   Stream<bool> get submitValid => Rx.combineLatest2(outTitle, outDelete, (title, delete) => title != null && delete != null);
 
-  DocumentSnapshot category;
+  DocumentSnapshot? category;
   late File image;
   late String title;
 
   AdminCategoryBloc(this.category) {
     if (category != null) {
-      title = category['title'];
+      title = category?['title'];
 
-      _titleController.add(category['title']);
-      _imageController.add(category['icon']);
+      _titleController.add(category?['title']);
+      _imageController.add(category?['icon']);
       _deleteController.add(true);
     } else {
+      _titleController.add("Insira um título");
+      _imageController.add(null);
       _deleteController.add(false);
     }
   }
@@ -53,11 +55,11 @@ class AdminCategoryBloc extends BlocBase {
   }
 
   void delete() {
-    category.reference.delete();
+    category?.reference.delete();
   }
 
   Future saveData() async {
-    if (image == null && category != null && title == category['title']) return;
+    if (image == null && category != null && title == category?['title']) return;
 
     Map<String, dynamic> dataToUpdate = {};
 
@@ -68,14 +70,14 @@ class AdminCategoryBloc extends BlocBase {
       dataToUpdate['icon'] = await snap.ref.getDownloadURL();
     }
 
-    if (category == null || title != category['title']) {
+    if (category == null || title != category?['title']) {
       dataToUpdate['title'] = title;
     }
 
     if (category == null) {
       await FirebaseFirestore.instance.collection('products').doc(title.toLowerCase()).set(dataToUpdate);
     } else {
-      await category.reference.update(dataToUpdate);
+      await category?.reference.update(dataToUpdate);
     }
   }
 

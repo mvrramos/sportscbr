@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sportscbr/blocs/Client/login_bloc.dart';
 import 'package:sportscbr/screens/Client/home_screen.dart';
@@ -14,13 +15,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _loginBloc = LoginBloc();
+  // final _adminUsersBloc = AdminUsersBloc();
 
   @override
   void initState() {
     super.initState();
     _loginBloc.outState.listen((state) {
       if (state == LoginState.success) {
-        Navigator.of(context).pop();
       } else if (state == LoginState.fail) {
         _showErrorDialog();
       }
@@ -41,19 +42,29 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(100, 73, 5, 182),
+        backgroundColor: const Color.fromARGB(150, 73, 5, 182),
         foregroundColor: Colors.white,
-        title: TextButton(
-          child: const Text(
-            "Realizar cadastro",
-            style: TextStyle(fontSize: 16, color: Colors.white),
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const SignUpScreen(),
+              builder: (context) => HomeScreen(),
             ));
           },
         ),
+        actions: [
+          TextButton(
+            child: const Text(
+              "Realizar cadastro",
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const SignUpScreen(),
+              ));
+            },
+          ),
+        ],
       ),
       backgroundColor: Colors.black,
       body: StreamBuilder<LoginState>(
@@ -94,8 +105,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 50,
                               child: ElevatedButton(
                                 onPressed: snapshot.hasData
-                                    ? () {
+                                    ? () async {
                                         _loginBloc.submit();
+                                        String? uid = FirebaseAuth.instance.currentUser?.uid;
+
                                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                                           builder: (context) => HomeScreen(),
                                         ));

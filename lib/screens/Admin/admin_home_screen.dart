@@ -1,4 +1,5 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:sportscbr/blocs/Admin/admin_orders_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:sportscbr/screens/login_screen.dart';
 import 'package:sportscbr/tabs/Admin/admin_clientes_tab.dart';
 import 'package:sportscbr/tabs/Admin/admin_orders_tab.dart';
 import 'package:sportscbr/tabs/Admin/admin_products_tab.dart';
+import 'package:sportscbr/widgets/Admin/admin_edit_category_dialog.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -20,6 +22,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   int _page = 0;
   late AdminUsersBloc _adminUsersBloc;
   late AdminOrdersBloc _adminOrdersBloc;
+  DocumentSnapshot? snapshot;
 
   @override
   void initState() {
@@ -41,7 +44,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       backgroundColor: Colors.black,
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
-          canvasColor: const Color.fromARGB(100, 73, 5, 182),
+          canvasColor: const Color.fromARGB(150, 73, 5, 182),
           primaryColor: Colors.white,
           textTheme: Theme.of(context).textTheme.copyWith(
                 bodySmall: const TextStyle(color: Colors.white),
@@ -155,10 +158,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       case 2:
         return FloatingActionButton(
           onPressed: () {
-            // showDialog(
-            //   context: context,
-            //   builder: (context) => const AdminEditCategoryDialog(),
-            // );
+            showDialog(
+              context: context,
+              builder: (context) => AdminEditCategoryDialog(snapshot),
+            );
           },
           backgroundColor: Colors.white,
           child: const Icon(Icons.add),

@@ -7,9 +7,9 @@ class PlacesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot>(
-      future: FirebaseFirestore.instance.collection('places').get(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('places').snapshots(),
+      builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -23,10 +23,18 @@ class PlacesTab extends StatelessWidget {
             child: Text('No data available'),
           );
         } else {
-          return ListView(
-            children: snapshot.data!.docs.map((DocumentSnapshot doc) {
-              return PlaceTile(doc); // Assuming PlaceTile accepts a DocumentSnapshot
-            }).toList(),
+          return Scaffold(
+            backgroundColor: Colors.black,
+            appBar: AppBar(
+              backgroundColor: const Color.fromARGB(100, 73, 5, 182),
+              foregroundColor: Colors.white,
+              title: const Text("Minha loja"),
+            ),
+            body: ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot doc) {
+                return PlaceTile(doc); // Assuming PlaceTile accepts a DocumentSnapshot
+              }).toList(),
+            ),
           );
         }
       },

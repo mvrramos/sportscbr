@@ -23,8 +23,18 @@ class OrdersTab extends StatelessWidget {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('Nenhum pedido encontrado.'));
           } else {
-            return ListView(
-              children: snapshot.data!.map((doc) => OrderTile(doc.id)).toList().reversed.toList(),
+            return Scaffold(
+              backgroundColor: Colors.black,
+              appBar: AppBar(
+                backgroundColor: const Color.fromARGB(100, 73, 5, 182),
+                foregroundColor: Colors.white,
+                title: const Text(
+                  'Pedidos',
+                ),
+              ),
+              body: ListView(
+                children: snapshot.data!.map((doc) => OrderTile(doc.id)).toList().reversed.toList(),
+              ),
             );
           }
         },
@@ -44,7 +54,7 @@ class OrdersTab extends StatelessWidget {
             const SizedBox(height: 16),
             const Text(
               "Faça o login para acompanhar",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),

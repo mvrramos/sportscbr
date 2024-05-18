@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sportscbr/screens/Client/cart_screen.dart';
 import 'package:sportscbr/tabs/Client/home_tab.dart';
 import 'package:sportscbr/tabs/Client/orders_tab.dart';
 import 'package:sportscbr/tabs/Client/places_tab.dart';
@@ -18,25 +19,32 @@ class DrawerTile extends StatelessWidget {
       color: Colors.white,
       child: InkWell(
         onTap: () {
-          if (page == 0) {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => HomeTab(),
-            ));
-          }
-          if (page == 1) {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const ProductsTab(),
-            ));
-          }
-          if (page == 2) {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const PlacesTab(),
-            ));
-          }
-          if (page == 3) {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const OrdersTab(),
-            ));
+          switch (page) {
+            case 0:
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => HomeTab(),
+              ));
+              break;
+            case 1:
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const ProductsTab(),
+              ));
+              break;
+            case 2:
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const PlacesTab(),
+              ));
+              break;
+            case 3:
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const OrdersTab(),
+              ));
+              break;
+            case 4:
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const CartScreen(),
+              ));
+            default:
           }
         },
         child: SizedBox(

@@ -1,6 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api, no_logic_in_create_state
-
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:sportscbr/blocs/Client/cart_bloc.dart';
 import 'package:sportscbr/blocs/Client/login_bloc.dart';
@@ -14,17 +11,17 @@ class ProductScreen extends StatefulWidget {
   const ProductScreen(this.product, {super.key});
 
   @override
-  _ProductScreenState createState() => _ProductScreenState(product);
+  _ProductScreenState createState() => _ProductScreenState();
 }
 
 class _ProductScreenState extends State<ProductScreen> {
   final LoginBloc _loginBloc = LoginBloc();
-  late CartBloc _cartBloc; // Declarar o _cartBloc como uma variável de classe
-
-  final ProductData product;
+  late CartBloc _cartBloc;
   late String sizes = "";
 
-  _ProductScreenState(this.product) {
+  @override
+  void initState() {
+    super.initState();
     _cartBloc = CartBloc(_loginBloc);
   }
 
@@ -36,29 +33,17 @@ class _ProductScreenState extends State<ProductScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         title: Text(product.title),
         centerTitle: true,
       ),
       body: ListView(
         children: [
-          AspectRatio(
-            aspectRatio: 0.9,
-            child: CarouselSlider(
-              items: product.images.map((image) {
-                return Image.network(
-                  image,
-                  fit: BoxFit.cover,
-                );
-              }).toList(),
-              options: CarouselOptions(
-                aspectRatio: 0.9,
-                viewportFraction: 0.8,
-                initialPage: 0,
-                enableInfiniteScroll: true,
-                autoPlay: false,
-                autoPlayCurve: Curves.fastOutSlowIn,
-                enlargeCenterPage: true,
-              ),
+          SizedBox(
+            height: 300,
+            child: Image.network(
+              product.images[0],
+              fit: BoxFit.scaleDown,
             ),
           ),
           Padding(
@@ -69,7 +54,8 @@ class _ProductScreenState extends State<ProductScreen> {
                 Text(
                   product.title,
                   style: const TextStyle(
-                    fontSize: 20,
+                    color: Colors.white,
+                    fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),
                   maxLines: 3,
@@ -77,7 +63,8 @@ class _ProductScreenState extends State<ProductScreen> {
                 Text(
                   "R\$ ${product.price}",
                   style: const TextStyle(
-                    fontSize: 22,
+                    color: Colors.white,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -105,15 +92,20 @@ class _ProductScreenState extends State<ProductScreen> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: s == sizes ? Colors.blue : Colors.grey,
+                            color: s == sizes ? const Color.fromARGB(150, 73, 5, 182) : Colors.white,
                             borderRadius: const BorderRadius.all(Radius.circular(4)),
                             border: Border.all(
-                              color: s == sizes ? Colors.blue : Colors.grey,
+                              color: s == sizes ? const Color.fromARGB(100, 73, 5, 182) : Colors.white,
                             ),
                           ),
                           width: 40,
                           alignment: Alignment.center,
-                          child: Text(s),
+                          child: Text(
+                            s,
+                            style: TextStyle(
+                              color: s == sizes ? Colors.white : const Color.fromARGB(150, 73, 5, 182),
+                            ),
+                          ),
                         ),
                       );
                     }).toList(),
@@ -125,17 +117,17 @@ class _ProductScreenState extends State<ProductScreen> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      backgroundColor: Colors.grey,
+                      backgroundColor: const Color.fromARGB(150, 73, 5, 182),
                     ),
                     onPressed: product.sizes.isNotEmpty
                         ? () {
                             if (_loginBloc.isLoggedIn()) {
-                              CartProduct cartProduct = CartProduct();
-                              cartProduct.sizes = sizes;
-                              cartProduct.quantity = 1;
-                              cartProduct.pid = product.id;
-                              cartProduct.category = product.category;
-                              cartProduct.productData = product;
+                              CartProduct cartProduct = CartProduct(
+                                sizes,
+                                "product.category",
+                                product.id,
+                                1,
+                              );
 
                               _cartBloc.addCartItem(cartProduct);
 
@@ -155,18 +147,18 @@ class _ProductScreenState extends State<ProductScreen> {
                         : null,
                     child: Text(
                       _loginBloc.isLoggedIn() ? "Adicionar ao carrinho" : "Entre para comprar",
-                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
                 ),
                 const SizedBox(height: 16),
                 const Text(
                   "Descrição",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey),
                 ),
                 Text(
                   product.description,
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ],
             ),

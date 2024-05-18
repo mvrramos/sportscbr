@@ -106,15 +106,18 @@ class CartScreen extends StatelessWidget {
                 DiscountCard(cartBloc: cartBloc),
                 const ShipCard(),
                 CartPrice(
-                    cartBloc as VoidCallback,
-                    () async {
-                      String? orderId = await cartBloc.finishOrder();
-                      if (orderId != null) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  () async {
+                    String? orderId = await cartBloc.finishOrder();
+                    if (orderId != null) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
                           builder: (context) => OrderScreen(orderId),
-                        ));
-                      }
-                    } as CartBloc),
+                        ),
+                      );
+                    }
+                  },
+                  cartBloc, // Passando o cartBloc como segundo argumento
+                ),
               ],
             );
           }

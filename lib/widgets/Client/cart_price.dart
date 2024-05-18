@@ -15,7 +15,7 @@ class CartPrice extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         child: StreamBuilder<List<CartProduct>>(
-          stream: cartBloc.productsStream, // Use o stream de produtos do CartBloc
+          stream: cartBloc.cartStream,
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(
@@ -40,7 +40,7 @@ class CartPrice extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Subtotal"),
-                    Text("R\$ ${price.toStringAsFixed(2)}"),
+                    Text("R\$ $price"),
                   ],
                 ),
                 const Divider(),
@@ -48,7 +48,7 @@ class CartPrice extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Desconto"),
-                    Text("R\$ ${discount.toStringAsFixed(2)}"),
+                    Text("R\$ $discount"),
                   ],
                 ),
                 const Divider(),
@@ -56,7 +56,7 @@ class CartPrice extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Entrega"),
-                    Text("R\$ ${ship.toStringAsFixed(2)}"),
+                    Text("R\$ $ship"),
                   ],
                 ),
                 const Divider(),
@@ -69,7 +69,7 @@ class CartPrice extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.w500),
                     ),
                     Text(
-                      "R\$ ${(price + ship - discount).toStringAsFixed(2)}",
+                      "R\$ ${(price + ship - discount)}",
                       style: const TextStyle(color: Colors.grey, fontSize: 18),
                     ),
                   ],

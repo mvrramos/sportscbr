@@ -8,16 +8,16 @@ class CartProduct {
   late int quantity;
   late String sizes;
 
-  late ProductData productData;
+  ProductData? productData;
 
-  CartProduct();
+  CartProduct(this.sizes, this.category, this.pid, this.quantity);
 
   CartProduct.fromDocument(DocumentSnapshot document) {
-    cid = document.id;
-    category = document.get('category');
-    pid = document.get('pid');
-    quantity = document.get('quantity');
-    sizes = document.get('sizes');
+    document.id;
+    document['category'];
+    document['pid'];
+    document['quantity'];
+    document['sizes'];
   }
 
   Map<String, dynamic> toMap() {
@@ -26,7 +26,7 @@ class CartProduct {
       "pid": pid,
       "quantity": quantity,
       "sizes": sizes,
-      "product": productData.toResumeMap()
+      "product": productData?.toResumeMap()
     };
   }
 }

@@ -22,8 +22,6 @@ class CartTileBloc {
     }
   }
 
-  
-
   void dispose() {
     _productController.close();
   }

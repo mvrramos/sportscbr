@@ -31,11 +31,12 @@ mixin AdminProductValidator {
 
 class AdminProductBloc extends BlocBase {
   final _dataController = BehaviorSubject<Map<String, dynamic>>();
-  final _loadingController = BehaviorSubject<bool>();
-  final _createdController = BehaviorSubject<bool>();
-
   Stream<Map<String, dynamic>> get outData => _dataController.stream;
+
+  final _loadingController = BehaviorSubject<bool>();
   Stream<bool> get outLoading => _loadingController.stream;
+
+  final _createdController = BehaviorSubject<bool>();
   Stream<bool> get outCreated => _createdController.stream;
 
   String categoryId;
