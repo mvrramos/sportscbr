@@ -82,16 +82,6 @@ class AdminUsersBloc extends BlocBase {
     return _users[uid];
   }
 
-  void resetPassword(String email) {
-    try {
-      // Verifica se o e-mail está cadastrado
-      _auth.sendPasswordResetEmail(email: email);
-      // Exibe uma mensagem de sucesso para o usuário
-    } catch (e) {
-      print("Erro ao resetar senha $e");
-    }
-  }
-
   void logout() async {
     try {
       await _auth.signOut();

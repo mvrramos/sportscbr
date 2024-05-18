@@ -10,11 +10,11 @@ class OrdersTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userBloc = Provider.of<LoginBloc>(context);
+    final loginBloc = Provider.of<LoginBloc>(context);
 
-    if (userBloc.currentUser != null) {
+    if (loginBloc.currentUser != null) {
       return StreamBuilder<List<DocumentSnapshot>>(
-        stream: userBloc.ordersStream,
+        stream: loginBloc.ordersStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

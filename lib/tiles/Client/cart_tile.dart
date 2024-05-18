@@ -1,18 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportscbr/blocs/Client/cart_bloc.dart'; // Importe o CartBloc
+import 'package:provider/provider.dart';
+import 'package:sportscbr/blocs/Client/cart_bloc.dart';
 import 'package:sportscbr/datas/cart_product.dart';
 import 'package:sportscbr/datas/product_data.dart';
 
 class CartTile extends StatelessWidget {
-  final CartProduct cartProduct;
-  final CartBloc cartBloc; // Dependência do CartBloc
+  const CartTile(this.cartProduct, {super.key});
 
-  const CartTile(this.cartProduct, this.cartBloc, {super.key});
+  final CartProduct cartProduct;
 
   @override
   Widget build(BuildContext context) {
-    Widget buildContent(ProductData productData) {
+    final cartBloc = Provider.of<CartBloc>(context);
+
+    cartBloc.updatePrices();
+
+    Widget buildContend() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -20,7 +24,7 @@ class CartTile extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             width: 120,
             child: Image.network(
-              productData.images[0],
+              cartProduct.productData!.images![0],
               fit: BoxFit.cover,
             ),
           ),
@@ -32,19 +36,22 @@ class CartTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    productData.title,
+                    cartProduct.productData!.title!,
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 17,
                     ),
                   ),
                   Text(
-                    "Tamanho ${cartProduct.sizes}",
-                    style: const TextStyle(fontWeight: FontWeight.w300),
+                    'Tamanho:  ${cartProduct.size}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w300,
+                    ),
                   ),
                   Text(
-                    "R\$ ${productData.price}",
-                    style: const TextStyle(
+                    'R\$ ${cartProduct.productData!.price!.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -53,25 +60,34 @@ class CartTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       IconButton(
-                        onPressed: cartProduct.quantity > 1 ? () => cartBloc.decProduct(cartProduct) : null,
+                        onPressed: cartProduct.quantity! > 1
+                            ? () {
+                                cartBloc.decProduct(cartProduct);
+                              }
+                            : null, //desebilita caso for menor que 1
                         icon: const Icon(Icons.remove),
-                        color: Colors.red,
+                        color: Theme.of(context).primaryColor,
                       ),
                       Text(cartProduct.quantity.toString()),
                       IconButton(
-                        onPressed: () => cartBloc.incProduct(cartProduct),
+                        onPressed: () {
+                          cartBloc.incProduct(cartProduct);
+                        },
+                        color: Theme.of(context).primaryColor,
                         icon: const Icon(Icons.add),
-                        color: Colors.green,
                       ),
-                      ElevatedButton(
-                        onPressed: () => cartBloc.removeCartItem(cartProduct),
-                        child: const Text(
-                          "Remover",
-                          style: TextStyle(color: Colors.grey),
+                      TextButton(
+                        onPressed: () {
+                          //remove todos
+                          cartBloc.removeCartItem(cartProduct);
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.grey[500],
                         ),
+                        child: const Text('Remover'),
                       ),
                     ],
-                  ),
+                  )
                 ],
               ),
             ),
@@ -82,13 +98,15 @@ class CartTile extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: cartProduct.productData != null
-          ? StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance.collection('products').doc(cartProduct.category).collection('camisas').doc(cartProduct.pid).snapshots(),
+      child: cartProduct.productData == null
+          ? FutureBuilder<DocumentSnapshot>(
+              //caso ainda não tenha os dados, recarrega os itens
+              future: FirebaseFirestore.instance.collection('products').doc(cartProduct.category).collection('itens').doc(cartProduct.pid).get(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  final productData = ProductData.fromDocument(snapshot.data!);
-                  return buildContent(productData);
+                  //salva os dados para mostrar depois
+                  cartProduct.productData = ProductData.fromDocument(snapshot.data!);
+                  return buildContend(); //mostra os itens
                 } else {
                   return Container(
                     height: 70,
@@ -98,7 +116,8 @@ class CartTile extends StatelessWidget {
                 }
               },
             )
-          : Container(), // Remova o buildContent do retorno do StreamBuilder
+          //caso já tenha os dados, mostra os itens
+          : buildContend(),
     );
   }
 }

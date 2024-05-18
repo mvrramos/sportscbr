@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sportscbr/datas/product_data.dart';
@@ -59,20 +58,12 @@ class CategoryScreen extends StatelessWidget {
                     ),
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
+                      //passa cada documento atraves do index, tranforma em um objeto, passa para o ProductTile
                       ProductData data = ProductData.fromDocument(snapshot.data!.docs[index]);
-                      data.category = this.snapshot.id;
-                      String imageUrl = data.images[0]; // Primeira imagem
+                      data.category = this.snapshot.id; //passando a catergoria do documento(produto)
                       return ProductTile(
-                        "grid",
-                        data,
-                        image: CachedNetworkImage(
-                          imageUrl: imageUrl,
-                          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) => const Icon(Icons.error),
-                          cacheKey: imageUrl,
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.low,
-                        ),
+                        type: "grid",
+                        product: data,
                       );
                     },
                   ),
@@ -82,18 +73,9 @@ class CategoryScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       ProductData data = ProductData.fromDocument(snapshot.data!.docs[index]);
                       data.category = this.snapshot.id;
-                      String imageUrl = data.images[0]; // Primeira imagem
                       return ProductTile(
-                        "list",
-                        data,
-                        image: CachedNetworkImage(
-                          imageUrl: imageUrl,
-                          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) => const Icon(Icons.error),
-                          cacheKey: imageUrl,
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.low,
-                        ),
+                        type: "list",
+                        product: data,
                       );
                     },
                   ),

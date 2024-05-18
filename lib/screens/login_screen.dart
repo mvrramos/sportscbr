@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sportscbr/blocs/Client/login_bloc.dart';
 import 'package:sportscbr/screens/Client/home_screen.dart';
@@ -107,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onPressed: snapshot.hasData
                                     ? () async {
                                         _loginBloc.submit();
-                                        String? uid = FirebaseAuth.instance.currentUser?.uid;
+                                        // String? uid = FirebaseAuth.instance.currentUser?.uid;
 
                                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                                           builder: (context) => HomeScreen(),

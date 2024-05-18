@@ -8,6 +8,7 @@ import 'package:sportscbr/screens/login_screen.dart';
 
 class ProductScreen extends StatefulWidget {
   final ProductData product;
+
   const ProductScreen(this.product, {super.key});
 
   @override
@@ -15,9 +16,9 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
+  String? sizes = "";
   final LoginBloc _loginBloc = LoginBloc();
   late CartBloc _cartBloc;
-  late String sizes = "";
 
   @override
   void initState() {
@@ -34,15 +35,15 @@ class _ProductScreenState extends State<ProductScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        title: Text(product.title),
+        title: Text(widget.product.title!),
         centerTitle: true,
       ),
       body: ListView(
         children: [
           SizedBox(
-            height: 300,
+            height: 250,
             child: Image.network(
-              product.images[0],
+              product.images?[0],
               fit: BoxFit.scaleDown,
             ),
           ),
@@ -52,7 +53,7 @@ class _ProductScreenState extends State<ProductScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  product.title,
+                  widget.product.title!,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -83,7 +84,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       mainAxisSpacing: 4,
                       childAspectRatio: 0.5,
                     ),
-                    children: product.sizes.map((s) {
+                    children: product.sizes!.map((s) {
                       return GestureDetector(
                         onTap: () {
                           setState(() {
@@ -119,15 +120,15 @@ class _ProductScreenState extends State<ProductScreen> {
                       foregroundColor: Colors.white,
                       backgroundColor: const Color.fromARGB(150, 73, 5, 182),
                     ),
-                    onPressed: product.sizes.isNotEmpty
+                    onPressed: product.sizes!.isNotEmpty
                         ? () {
                             if (_loginBloc.isLoggedIn()) {
-                              CartProduct cartProduct = CartProduct(
-                                sizes,
-                                "product.category",
-                                product.id,
-                                1,
-                              );
+                              CartProduct cartProduct = CartProduct();
+                              cartProduct.size = sizes;
+                              cartProduct.quantity = 1;
+                              cartProduct.pid = widget.product.id;
+                              cartProduct.category = widget.product.category;
+                              cartProduct.productData = widget.product;
 
                               _cartBloc.addCartItem(cartProduct);
 
@@ -157,7 +158,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey),
                 ),
                 Text(
-                  product.description,
+                  widget.product.description!,
                   style: const TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ],

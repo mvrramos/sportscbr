@@ -1,81 +1,95 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:sportscbr/datas/product_data.dart';
 import 'package:sportscbr/screens/Client/product_screen.dart';
 
 class ProductTile extends StatelessWidget {
+  const ProductTile({super.key, required this.type, required this.product});
+
   final String type;
   final ProductData product;
-
-  const ProductTile(this.type, this.product, {super.key, required CachedNetworkImage image});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductScreen(product)));
+        Navigator.of(context).push(
+          //abrindo tela de produto
+          MaterialPageRoute(builder: (context) => ProductScreen(product)),
+        );
       },
       child: Card(
-        child: type == "grid"
+        child: type == 'grid'
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
+                children: [
                   AspectRatio(
                     aspectRatio: 0.8,
                     child: Image.network(
-                      product.images[0],
+                      product.images![0],
                       fit: BoxFit.cover,
                     ),
                   ),
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
                       child: Column(
-                        children: <Widget>[
+                        children: [
                           Text(
-                            product.title,
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                            product.title!,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           Text(
-                            "R\$ ${product.price}",
-                            style: const TextStyle(color: Colors.black, fontSize: 11.0, fontWeight: FontWeight.bold),
-                          )
+                            'R\$ ${product.price!.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               )
             : Row(
-                children: <Widget>[
+                children: [
                   Flexible(
-                    flex: 1,
+                    flex: 1, //proporção do tamanho que quer ocupar
                     child: Image.network(
-                      product.images[0],
+                      product.images![0],
                       fit: BoxFit.cover,
-                      height: 250.0,
+                      height: 250,
                     ),
                   ),
                   Flexible(
                     flex: 1,
-                    child: Container(
-                      padding: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
+                        children: [
                           Text(
-                            product.title,
-                            style: const TextStyle(fontWeight: FontWeight.w500),
+                            product.title!,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           Text(
-                            "R\$ ${product.price}",
-                            style: const TextStyle(color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.bold),
-                          )
+                            'R\$ ${product.price!.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
       ),

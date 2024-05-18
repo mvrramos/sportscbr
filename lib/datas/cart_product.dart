@@ -2,31 +2,37 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sportscbr/datas/product_data.dart';
 
 class CartProduct {
-  late String cid;
-  late String category;
-  late String pid;
-  late int quantity;
-  late String sizes;
+  String? cid; //cardId
+
+  String? category;
+  String? pid; //productId
+
+  int? quantity;
+  String? size;
 
   ProductData? productData;
 
-  CartProduct(this.sizes, this.category, this.pid, this.quantity);
-
+  //construtuor vazio
+  CartProduct();
+  //construtor
+  //esse documento será todos os produtos que estarão armazenados no carrinho
+  //vai receber e tranformar cada produto em um CartProduct
   CartProduct.fromDocument(DocumentSnapshot document) {
-    document.id;
-    document['category'];
-    document['pid'];
-    document['quantity'];
-    document['sizes'];
+    cid = document.id;
+    category = document.get('category');
+    pid = document.get('pid');
+    quantity = document.get('quantity');
+    size = document.get('size');
   }
 
+  //pega o objeto e tranforma em mapa para armazaenar no Firebase
   Map<String, dynamic> toMap() {
     return {
-      "category": category,
-      "pid": pid,
-      "quantity": quantity,
-      "sizes": sizes,
-      "product": productData?.toResumeMap()
+      'category': category,
+      'pid': pid,
+      'quantity': quantity,
+      'size': size,
+      'product': productData!.toResumeMap() //guarda apenas o resumo dos produtos adicionados
     };
   }
 }

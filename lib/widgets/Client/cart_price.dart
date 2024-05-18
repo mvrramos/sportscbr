@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sportscbr/blocs/Client/cart_bloc.dart';
-import 'package:sportscbr/datas/cart_product.dart'; // Importe o CartBloc
+import 'package:sportscbr/datas/cart_product.dart';
 
 class CartPrice extends StatelessWidget {
   final VoidCallback buy;
-  final CartBloc cartBloc; // Dependência do CartBloc
+  final CartBloc cartBloc;
 
   const CartPrice(this.buy, this.cartBloc, {super.key});
 
@@ -15,7 +15,7 @@ class CartPrice extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         child: StreamBuilder<List<CartProduct>>(
-          stream: cartBloc.cartStream,
+          stream: cartBloc.productsStream,
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(
@@ -26,6 +26,7 @@ class CartPrice extends StatelessWidget {
             double price = cartBloc.getProductsPrice();
             double discount = cartBloc.getDiscountPrice();
             double ship = cartBloc.getShipPrice();
+            double total = price + ship - discount;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -40,7 +41,7 @@ class CartPrice extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Subtotal"),
-                    Text("R\$ $price"),
+                    Text("R\$ ${price.toStringAsFixed(2)}"),
                   ],
                 ),
                 const Divider(),
@@ -48,7 +49,7 @@ class CartPrice extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Desconto"),
-                    Text("R\$ $discount"),
+                    Text("R\$ ${discount.toStringAsFixed(2)}"),
                   ],
                 ),
                 const Divider(),
@@ -56,7 +57,7 @@ class CartPrice extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Entrega"),
-                    Text("R\$ $ship"),
+                    Text("R\$ ${ship.toStringAsFixed(2)}"),
                   ],
                 ),
                 const Divider(),
@@ -69,7 +70,7 @@ class CartPrice extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.w500),
                     ),
                     Text(
-                      "R\$ ${(price + ship - discount)}",
+                      "R\$ ${total.toStringAsFixed(2)}",
                       style: const TextStyle(color: Colors.grey, fontSize: 18),
                     ),
                   ],

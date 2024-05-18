@@ -14,7 +14,9 @@ enum SortCriteria {
 class AdminOrdersBloc extends BlocBase {
   final _adminOrdersController = BehaviorSubject<List>();
   Stream<List> get outOrders => _adminOrdersController.stream;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
   final List<DocumentSnapshot> _adminOrders = [];
   SortCriteria _criteria = SortCriteria.READY_FIRST;
 

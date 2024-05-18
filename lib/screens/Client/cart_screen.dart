@@ -29,7 +29,7 @@ class CartScreen extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8),
             alignment: Alignment.center,
             child: StreamBuilder<List<CartProduct>>(
-              stream: cartBloc.productsStream,
+              stream: cartBloc.cartStream,
               builder: (context, snapshot) {
                 int p = snapshot.data?.length ?? 0;
                 return Text(
@@ -99,9 +99,13 @@ class CartScreen extends StatelessWidget {
             return ListView(
               children: [
                 Column(
-                  children: snapshot.data!.map((product) {
-                    return CartTile(product, cartBloc);
-                  }).toList(),
+                  children: snapshot.data!
+                      .map((product) {
+                        return CartTile(product);
+                      })
+                      .toList()
+                      .reversed
+                      .toList(),
                 ),
                 DiscountCard(cartBloc: cartBloc),
                 const ShipCard(),
