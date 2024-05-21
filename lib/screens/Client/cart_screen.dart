@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sportscbr/blocs/Client/cart_bloc.dart';
@@ -28,10 +29,10 @@ class CartScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.only(right: 8),
             alignment: Alignment.center,
-            child: StreamBuilder<List<CartProduct>>(
-              stream: cartBloc.cartStream,
+            child: StreamBuilder<List<DocumentSnapshot>>(
+              stream: cartBloc.outCart,
               builder: (context, snapshot) {
-                int p = snapshot.data?.length ?? 0;
+                int? p = snapshot.data?.length;
                 return Text(
                   "$p ${p == 1 ? "ITEM" : "ITENS"} ",
                   style: const TextStyle(fontSize: 17),
@@ -41,8 +42,8 @@ class CartScreen extends StatelessWidget {
           )
         ],
       ),
-      body: StreamBuilder<List<CartProduct>>(
-        stream: cartBloc.productsStream,
+      body: StreamBuilder<List<DocumentSnapshot>>(
+        stream: cartBloc.outCart,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -101,13 +102,13 @@ class CartScreen extends StatelessWidget {
                 Column(
                   children: snapshot.data!
                       .map((product) {
-                        return CartTile(product);
+                        return CartTile(product as CartProduct, cartBloc);
                       })
                       .toList()
                       .reversed
                       .toList(),
                 ),
-                DiscountCard(cartBloc: cartBloc),
+                DiscountCard(cartBloc),
                 const ShipCard(),
                 CartPrice(
                   () async {

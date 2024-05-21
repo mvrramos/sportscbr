@@ -5,7 +5,7 @@ import 'package:sportscbr/blocs/Client/cart_bloc.dart'; // Importe o CartBloc
 class DiscountCard extends StatelessWidget {
   final CartBloc cartBloc;
 
-  const DiscountCard({required this.cartBloc, super.key});
+  const DiscountCard(this.cartBloc, {super.key});
 
   @override
   Widget build(BuildContext context) {

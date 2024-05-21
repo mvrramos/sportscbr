@@ -29,7 +29,6 @@ class HomeScreen extends StatelessWidget {
           ),
           drawer: CustomDrawer(_pageController),
           body: const ProductsTab(),
-          floatingActionButton: const CartButton(),
         ),
         Scaffold(
           appBar: AppBar(

@@ -8,20 +8,17 @@ import 'package:sportscbr/datas/cart_product.dart';
 
 class CartBloc extends BlocBase {
   final LoginBloc user;
-  List<CartProduct> products = [];
+  List products = [];
   String couponCode = "";
   int discountPercentage = 0;
   bool isLoading = false;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final _cartController = StreamController<List<CartProduct>>.broadcast();
-  Stream<List<CartProduct>> get cartStream => _cartController.stream;
+  final _cartController = BehaviorSubject<List<DocumentSnapshot>>();
+  Stream<List<DocumentSnapshot>> get outCart => _cartController.stream;
 
   final _productsController = BehaviorSubject<List<CartProduct>>.seeded([]);
   Stream<List<CartProduct>> get productsStream => _productsController.stream;
-
-  final _ordersController = BehaviorSubject<List>();
-  Stream<List> get ordersStream => _ordersController.stream;
 
   final _isLoadingController = BehaviorSubject<bool>.seeded(false);
   Stream<bool> get isLoadingStream => _isLoadingController.stream;
@@ -33,7 +30,7 @@ class CartBloc extends BlocBase {
   }
 
   Future<void> addCartItem(CartProduct cartProduct) async {
-    products.add(cartProduct); //adiconando produtos ao carrinho
+    products.add(cartProduct); //adicionando produtos ao carrinho
     FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').add(cartProduct.toMap()).then((doc) {
       //pegando o id do cart
       cartProduct.cid = doc.id;
@@ -59,11 +56,16 @@ class CartBloc extends BlocBase {
   }
 
   Future<void> _loadCartItems() async {
-    //carregando todos os documentos(itens) do carrinho
-    QuerySnapshot carry = await FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').get();
-    //transforma cada documento retornado do firebae em um CartProduct
-    products = carry.docs.map((doc) => CartProduct.fromDocument(doc)).toList();
-    notifyListeners();
+    try {
+      // Obtendo o snapshot dos itens do carrinho de forma assíncrona
+      final cartSnapshot = await _firestore.collection('users').doc(user.firebaseUser!.uid).collection('cart').get();
+
+      // Adicionando o snapshot ao _cartController como uma lista de DocumentSnapshot
+      _cartController.add(cartSnapshot.docs);
+    } catch (e) {
+      // Tratando erros, se necessário
+      print('Erro ao carregar itens do carrinho: $e');
+    }
   }
 
   void decProduct(CartProduct cartProduct) {
@@ -155,9 +157,10 @@ class CartBloc extends BlocBase {
 
   @override
   void dispose() {
-    _cartController.close();
-    _productsController.close();
-    _isLoadingController.close();
+    // _cartController.close();
+    // _productsController.close();
+    // _ordersController.close();
+    // _isLoadingController.close();
     super.dispose();
   }
 }

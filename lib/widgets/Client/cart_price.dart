@@ -41,7 +41,7 @@ class CartPrice extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Subtotal"),
-                    Text("R\$ ${price.toStringAsFixed(2)}"),
+                    Text("R\$ $price"),
                   ],
                 ),
                 const Divider(),
