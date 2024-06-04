@@ -49,7 +49,7 @@ class CartBloc extends BlocBase {
     _productsController.add(List.from(products)); // Notificar os ouvintes
   }
 
-  Future<void> updateCartItem(CartProduct cartProduct) async {
+  void updateCartItem(CartProduct cartProduct) async {
     try {
       await _firestore.collection('users').doc(user.firebaseUser!.uid).collection('cart').doc(cartProduct.cid).update(cartProduct.toMap());
       _productsController.add(List.from(products)); // Notificar os ouvintes
