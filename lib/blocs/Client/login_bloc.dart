@@ -80,7 +80,7 @@ class LoginBloc extends BlocBase with LoginValidator {
 
   void submit() async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.value,
         password: _passwordController.value,
       );

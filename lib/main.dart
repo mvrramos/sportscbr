@@ -8,8 +8,8 @@ import 'package:sportscbr/firebase_options.dart';
 import 'package:sportscbr/screens/Client/home_screen.dart';
 
 void main() async {
-  Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
+  Provider.debugCheckInvalidValueType = null;
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }

@@ -16,7 +16,7 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  String? sizes = "";
+  String? size;
   final LoginBloc _loginBloc = LoginBloc();
   late CartBloc _cartBloc;
 
@@ -35,7 +35,7 @@ class _ProductScreenState extends State<ProductScreen> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        title: Text(widget.product.title!),
+        title: Text(widget.product.title ?? ''),
         centerTitle: true,
       ),
       body: ListView(
@@ -43,7 +43,7 @@ class _ProductScreenState extends State<ProductScreen> {
           SizedBox(
             height: 250,
             child: Image.network(
-              product.images?[0],
+              product.images?[0] ?? '',
               fit: BoxFit.scaleDown,
             ),
           ),
@@ -53,7 +53,7 @@ class _ProductScreenState extends State<ProductScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  widget.product.title!,
+                  widget.product.title ?? '',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -62,7 +62,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   maxLines: 3,
                 ),
                 Text(
-                  "R\$ ${product.price}",
+                  "R\$ ${product.price ?? 0.0}",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -84,19 +84,19 @@ class _ProductScreenState extends State<ProductScreen> {
                       mainAxisSpacing: 4,
                       childAspectRatio: 0.5,
                     ),
-                    children: product.sizes!.map((s) {
+                    children: (product.sizes ?? []).map((s) {
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            sizes = s;
+                            size = s;
                           });
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: s == sizes ? const Color.fromARGB(150, 73, 5, 182) : Colors.white,
+                            color: s == size ? const Color.fromARGB(150, 73, 5, 182) : Colors.white,
                             borderRadius: const BorderRadius.all(Radius.circular(4)),
                             border: Border.all(
-                              color: s == sizes ? const Color.fromARGB(100, 73, 5, 182) : Colors.white,
+                              color: s == size ? const Color.fromARGB(100, 73, 5, 182) : Colors.white,
                             ),
                           ),
                           width: 40,
@@ -104,7 +104,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           child: Text(
                             s,
                             style: TextStyle(
-                              color: s == sizes ? Colors.white : const Color.fromARGB(150, 73, 5, 182),
+                              color: s == size ? Colors.white : const Color.fromARGB(150, 73, 5, 182),
                             ),
                           ),
                         ),
@@ -120,11 +120,11 @@ class _ProductScreenState extends State<ProductScreen> {
                       foregroundColor: Colors.white,
                       backgroundColor: const Color.fromARGB(150, 73, 5, 182),
                     ),
-                    onPressed: product.sizes!.isNotEmpty
+                    onPressed: product.sizes != null && product.sizes!.isNotEmpty && size != null
                         ? () {
                             if (_loginBloc.isLoggedIn()) {
                               CartProduct cartProduct = CartProduct();
-                              cartProduct.size = sizes;
+                              cartProduct.size = size!;
                               cartProduct.quantity = 1;
                               cartProduct.pid = widget.product.id;
                               cartProduct.category = widget.product.category;
@@ -158,7 +158,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey),
                 ),
                 Text(
-                  widget.product.description!,
+                  widget.product.description ?? '',
                   style: const TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ],

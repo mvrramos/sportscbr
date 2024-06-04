@@ -17,7 +17,7 @@ class DiscountCard extends StatelessWidget {
           textAlign: TextAlign.start,
           style: TextStyle(
             fontWeight: FontWeight.w500,
-            color: Colors.grey,
+            color: Colors.black,
           ),
         ),
         leading: const Icon(Icons.discount_outlined),

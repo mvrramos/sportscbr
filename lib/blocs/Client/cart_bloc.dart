@@ -8,14 +8,11 @@ import 'package:sportscbr/datas/cart_product.dart';
 
 class CartBloc extends BlocBase {
   final LoginBloc user;
-  List products = [];
+  List<CartProduct> products = [];
   String couponCode = "";
   int discountPercentage = 0;
   bool isLoading = false;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  final _cartController = BehaviorSubject<List<DocumentSnapshot>>();
-  Stream<List<DocumentSnapshot>> get outCart => _cartController.stream;
 
   final _productsController = BehaviorSubject<List<CartProduct>>.seeded([]);
   Stream<List<CartProduct>> get productsStream => _productsController.stream;
@@ -29,59 +26,48 @@ class CartBloc extends BlocBase {
     }
   }
 
+  void _loadCartItems() async {
+    try {
+      final cartSnapshot = await FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').get();
+      products = cartSnapshot.docs.map((doc) => CartProduct.fromDocument(doc)).toList();
+      _productsController.add(List.from(products)); // Notificar os ouvintes
+    } catch (e) {
+      print('Erro ao carregar itens do carrinho: $e');
+    }
+  }
+
   Future<void> addCartItem(CartProduct cartProduct) async {
-    products.add(cartProduct); //adicionando produtos ao carrinho
-    FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').add(cartProduct.toMap()).then((doc) {
-      //pegando o id do cart
-      cartProduct.cid = doc.id;
-    });
-    notifyListeners();
+    DocumentReference doc = await FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').add(cartProduct.toMap());
+    cartProduct.cid = doc.id;
+    products.add(cartProduct);
+    _productsController.add(List.from(products)); // Notificar os ouvintes
   }
 
   Future<void> removeCartItem(CartProduct cartProduct) async {
-    //tirando produtos do carrinho
-    FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').doc(cartProduct.cid).delete();
-
+    await FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').doc(cartProduct.cid).delete();
     products.remove(cartProduct);
-    notifyListeners();
+    _productsController.add(List.from(products)); // Notificar os ouvintes
   }
 
   Future<void> updateCartItem(CartProduct cartProduct) async {
     try {
       await _firestore.collection('users').doc(user.firebaseUser!.uid).collection('cart').doc(cartProduct.cid).update(cartProduct.toMap());
-      _productsController.add(List.from(products));
+      _productsController.add(List.from(products)); // Notificar os ouvintes
     } catch (e) {
       print("Erro ao atualizar item do carrinho: $e");
     }
   }
 
-  Future<void> _loadCartItems() async {
-    try {
-      // Obtendo o snapshot dos itens do carrinho de forma assíncrona
-      final cartSnapshot = await _firestore.collection('users').doc(user.firebaseUser!.uid).collection('cart').get();
-
-      // Adicionando o snapshot ao _cartController como uma lista de DocumentSnapshot
-      _cartController.add(cartSnapshot.docs);
-    } catch (e) {
-      // Tratando erros, se necessário
-      print('Erro ao carregar itens do carrinho: $e');
-    }
-  }
-
   void decProduct(CartProduct cartProduct) {
-    //decrementa a quantidade
     cartProduct.quantity = (cartProduct.quantity! - 1);
-    //atualiza o firebase
     FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').doc(cartProduct.cid).update(cartProduct.toMap());
-    notifyListeners();
+    _productsController.add(List.from(products)); // Notificar os ouvintes
   }
 
   void incProduct(CartProduct cartProduct) {
-    //incrementa a quantidade
     cartProduct.quantity = (cartProduct.quantity! + 1);
-    //atualiza o firebase
     FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').doc(cartProduct.cid).update(cartProduct.toMap());
-    notifyListeners();
+    _productsController.add(List.from(products)); // Notificar os ouvintes
   }
 
   void setCoupon(String couponCode, int discountPercentage) {
@@ -90,7 +76,7 @@ class CartBloc extends BlocBase {
   }
 
   void updatePrices() {
-    notifyListeners();
+    _productsController.add(List.from(products)); // Notificar os ouvintes
   }
 
   double getProductsPrice() {
@@ -115,52 +101,47 @@ class CartBloc extends BlocBase {
     if (products.isEmpty) return null;
 
     isLoading = true;
-    notifyListeners();
+    _isLoadingController.add(isLoading);
+
     double productsPrice = getProductsPrice();
     double shipPrice = getShipPrice();
     double discount = getDiscountPrice();
 
-    //adicionando o pedido na coleção orders e obtendo uma referêcia para este pedido para salvar ele no usuário depois
     DocumentReference refOrder = await FirebaseFirestore.instance.collection('orders').add({
       'clientId': user.firebaseUser!.uid,
-      //trasforma uma lista de CartProducts em uma lista de mapas
       'products': products.map((cartProduct) => cartProduct.toMap()).toList(),
-      'shipProce': shipPrice,
+      'shipPrice': shipPrice,
       'productsPrice': productsPrice,
       'discount': discount,
-      'totalPrice': productsPrice - discount + shipPrice,
-      'status': 1 //status do pedido (1) -> preparando, (2) -> enviando, ... etc
+      'totalPrice': productsPrice + shipPrice - discount,
+      'status': 1,
     });
 
-    //salvando referência do pedido no usuário
     await FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('orders').doc(refOrder.id).set({
       'orderId': refOrder.id
     });
 
-    //pegando todos os itens do carrinho
     QuerySnapshot query = await FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').get();
-    //pegando uma referência para cada um dos produtos do carrinho e deletando
     for (DocumentSnapshot doc in query.docs) {
       doc.reference.delete();
     }
 
-    products.clear(); //limpando lista local
+    products.clear();
 
     couponCode = "";
     discountPercentage = 0;
 
     isLoading = false;
-    notifyListeners();
+    _isLoadingController.add(isLoading);
+    _productsController.add(List.from(products)); // Notificar os ouvintes
 
     return refOrder.id;
   }
 
   @override
   void dispose() {
-    // _cartController.close();
-    // _productsController.close();
-    // _ordersController.close();
-    // _isLoadingController.close();
+    _productsController.close();
+    _isLoadingController.close();
     super.dispose();
   }
 }

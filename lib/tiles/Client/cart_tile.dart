@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sportscbr/blocs/Client/cart_bloc.dart'; // Importe o CartBloc
+import 'package:provider/provider.dart';
+import 'package:sportscbr/blocs/Client/cart_bloc.dart';
 import 'package:sportscbr/datas/cart_product.dart';
 import 'package:sportscbr/datas/product_data.dart';
 
 class CartTile extends StatelessWidget {
-  const CartTile(this.cartProduct, this.cartBloc, {super.key});
-
+  const CartTile(this.cartProduct, {super.key});
   final CartProduct cartProduct;
-  final CartBloc cartBloc; // Dependência do CartBloc
 
   @override
   Widget build(BuildContext context) {
+    final cartBloc = Provider.of<CartBloc>(context);
     cartBloc.updatePrices();
 
     Widget buildContent() {
@@ -22,7 +22,7 @@ class CartTile extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             width: 120,
             child: Image.network(
-              cartProduct.productData?.images?[0],
+              cartProduct.productData?.images?[0] ?? '',
               fit: BoxFit.cover,
             ),
           ),
@@ -34,7 +34,7 @@ class CartTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    cartProduct.productData!.title!,
+                    "${cartProduct.productData?.title}",
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 17,
@@ -45,7 +45,7 @@ class CartTile extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.w300),
                   ),
                   Text(
-                    "R\$ ${cartProduct.productData!.price!}",
+                    "R\$ ${cartProduct.productData?.price ?? '0'}",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -85,25 +85,34 @@ class CartTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: cartProduct.productData == null
-          ? FutureBuilder<DocumentSnapshot>(
-              //caso ainda não tenha os dados, recarrega os itens
+          ? buildContent()
+          : FutureBuilder<DocumentSnapshot>(
               future: FirebaseFirestore.instance.collection('products').doc(cartProduct.category).collection('cart').doc(cartProduct.pid).get(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  //salva os dados para mostrar depois
-                  cartProduct.productData = ProductData.fromDocument(snapshot.data!);
-                  return buildContent(); //mostra os itens
-                } else {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
                     height: 70,
                     alignment: Alignment.center,
                     child: const CircularProgressIndicator(),
                   );
+                } else if (snapshot.hasData) {
+                  cartProduct.productData = ProductData.fromDocument(snapshot.data!);
+                  return buildContent();
+                } else {
+                  return Container(
+                    height: 70,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Produto não encontrado',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
                 }
               },
-            )
-          //caso já tenha os dados, mostra os itens
-          : buildContent(),
+            ),
     );
   }
 }

@@ -62,8 +62,8 @@ class CategoryScreen extends StatelessWidget {
                       ProductData data = ProductData.fromDocument(snapshot.data!.docs[index]);
                       data.category = this.snapshot.id; //passando a catergoria do documento(produto)
                       return ProductTile(
-                        type: "grid",
-                        product: data,
+                        "grid",
+                        data,
                       );
                     },
                   ),
@@ -74,8 +74,8 @@ class CategoryScreen extends StatelessWidget {
                       ProductData data = ProductData.fromDocument(snapshot.data!.docs[index]);
                       data.category = this.snapshot.id;
                       return ProductTile(
-                        type: "list",
-                        product: data,
+                        "list",
+                        data,
                       );
                     },
                   ),

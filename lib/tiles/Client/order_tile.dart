@@ -12,8 +12,8 @@ class OrderTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: Padding(
         padding: const EdgeInsets.all(9),
-        child: StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance.collection('orders').doc(orderId).snapshots(),
+        child: FutureBuilder<DocumentSnapshot>(
+          future: FirebaseFirestore.instance.collection('orders').doc(orderId).get(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());

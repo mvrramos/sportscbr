@@ -3,7 +3,7 @@ import 'package:sportscbr/datas/product_data.dart';
 import 'package:sportscbr/screens/Client/product_screen.dart';
 
 class ProductTile extends StatelessWidget {
-  const ProductTile({super.key, required this.type, required this.product});
+  const ProductTile(this.type, this.product, {super.key});
 
   final String type;
   final ProductData product;
@@ -42,10 +42,10 @@ class ProductTile extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            'R\$ ${product.price!.toStringAsFixed(2)}',
+                            'R\$ ${product.price!}',
                             style: TextStyle(
                               color: Theme.of(context).primaryColor,
-                              fontSize: 17,
+                              fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -79,7 +79,7 @@ class ProductTile extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            'R\$ ${product.price!.toStringAsFixed(2)}',
+                            'R\$ ${product.price?.toStringAsFixed(2)}',
                             style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 17,

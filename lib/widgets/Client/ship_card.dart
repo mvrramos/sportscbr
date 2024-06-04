@@ -13,7 +13,7 @@ class ShipCard extends StatelessWidget {
           textAlign: TextAlign.start,
           style: TextStyle(
             fontWeight: FontWeight.w500,
-            color: Colors.grey,
+            color: Colors.black,
           ),
         ),
         leading: const Icon(Icons.location_on_outlined),
@@ -23,7 +23,6 @@ class ShipCard extends StatelessWidget {
             child: TextFormField(
               decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "Digite o seu CEP"),
               initialValue: "",
-              onFieldSubmitted: (text) {},
             ),
           ),
         ],

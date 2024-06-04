@@ -12,8 +12,6 @@ class ProductData {
   List? images;
   List? sizes;
 
-  //pegando documento e transformando nos dados da classe
-  //construtor
   ProductData.fromDocument(DocumentSnapshot snapshot) {
     id = snapshot.id;
     title = snapshot.get('title');
@@ -23,7 +21,6 @@ class ProductData {
     sizes = snapshot.get('sizes');
   }
 
-//resumo dos produtos - visto nos pedidos/carrinho
   Map<String, dynamic> toResumeMap() {
     return {
       'title': title,

@@ -12,11 +12,7 @@ class CartProduct {
 
   ProductData? productData;
 
-  //construtuor vazio
   CartProduct();
-  //construtor
-  //esse documento será todos os produtos que estarão armazenados no carrinho
-  //vai receber e tranformar cada produto em um CartProduct
   CartProduct.fromDocument(DocumentSnapshot document) {
     cid = document.id;
     category = document.get('category');
@@ -25,14 +21,13 @@ class CartProduct {
     size = document.get('size');
   }
 
-  //pega o objeto e tranforma em mapa para armazaenar no Firebase
   Map<String, dynamic> toMap() {
     return {
       'category': category,
       'pid': pid,
       'quantity': quantity,
       'size': size,
-      'product': productData!.toResumeMap() //guarda apenas o resumo dos produtos adicionados
+      'product': productData!.toResumeMap()
     };
   }
 }

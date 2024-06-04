@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_null_comparison
+import 'dart:io';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,29 +7,29 @@ import 'package:rxdart/rxdart.dart';
 
 mixin AdminProductValidator {
   String? validateImage(List<dynamic>? images) {
-    if (images!.isEmpty) return "Adicione imagens do produto";
+    if (images == null || images.isEmpty) return "Adicione imagens do produto";
     return null;
   }
 
   String? validateTitle(String? text) {
-    if (text!.isEmpty) return "Preencha o título do produto";
+    if (text == null || text.isEmpty) return "Preencha o título do produto";
     return null;
   }
 
   String? validateDescription(String? text) {
-    if (text!.isEmpty) return "Preencha a descrição do produto";
-    return null; // Retorna null quando o texto não está vazio ou nulo
+    if (text == null || text.isEmpty) return "Preencha a descrição do produto";
+    return null;
   }
 
   String? validatePrice(String? text) {
-    if (text!.isEmpty) return "Preço inválido";
+    if (text == null || text.isEmpty) return "Preço inválido";
     double? price = double.tryParse(text);
     if (price == null) return "Preço inválido";
     return null;
   }
 }
 
-class AdminProductBloc extends BlocBase {
+class AdminProductBloc extends BlocBase with AdminProductValidator {
   final _dataController = BehaviorSubject<Map<String, dynamic>>();
   Stream<Map<String, dynamic>> get outData => _dataController.stream;
 
@@ -40,24 +40,21 @@ class AdminProductBloc extends BlocBase {
   Stream<bool> get outCreated => _createdController.stream;
 
   String categoryId;
-  late DocumentSnapshot product;
+  DocumentSnapshot? product;
   late Map<String, dynamic> unsavedData;
 
   AdminProductBloc(this.categoryId, this.product) {
-    if (product.exists && product.data() != null) {
-      Map<String, dynamic> data = product.data() as Map<String, dynamic>;
-      if (data.containsKey('images') && data.containsKey('sizes')) {
-        unsavedData = {
-          ...data,
-          'images': List<String>.from(data['images'] ?? []),
-          'sizes': List<String>.from(data['sizes'] ?? []),
-        };
-
-        _createdController.add(true);
-      } else {
-        unsavedData = {};
-        _createdController.add(false);
-      }
+    if (product != null && product!.exists && product!.data() != null) {
+      Map<String, dynamic> data = product!.data() as Map<String, dynamic>;
+      unsavedData = {
+        ...data,
+        'images': List<String>.from(data['images'] ?? []),
+        'sizes': List<String>.from(data['sizes'] ?? []),
+      };
+      _createdController.add(true);
+    } else {
+      unsavedData = {};
+      _createdController.add(false);
     }
     _dataController.add(unsavedData);
   }
@@ -91,11 +88,11 @@ class AdminProductBloc extends BlocBase {
     _loadingController.add(true);
     try {
       if (product != null) {
-        await _uploadImages(product.id);
-        await product.reference.update(unsavedData);
+        await _uploadImages(product!.id);
+        await product!.reference.update(unsavedData);
       } else {
-        DocumentReference dr = FirebaseFirestore.instance.collection('products').doc(); // Criando um novo documento com um ID automático
-        await dr.set(Map.from(unsavedData..remove('images'))); // Usando set() para adicionar um novo documento
+        DocumentReference dr = FirebaseFirestore.instance.collection('products').doc();
+        await dr.set(Map.from(unsavedData)..remove('images'));
         await _uploadImages(dr.id);
         await dr.update(unsavedData);
       }
@@ -104,26 +101,35 @@ class AdminProductBloc extends BlocBase {
       return true;
     } catch (e) {
       _loadingController.add(false);
+      print("Erro ao salvar produto: $e"); // Adicione logs para ajudar na depuração
       return false;
     }
   }
 
-  Future _uploadImages(String productId) async {
-    for (var i = 0; i < unsavedData['images'].length; i++) {
-      if (unsavedData['images'][i] is String) continue;
+  Future<void> _uploadImages(String productId) async {
+    List<dynamic> images = unsavedData['images'];
+    for (var i = 0; i < images.length; i++) {
+      if (images[i] is String) continue;
 
-      Reference ref = FirebaseStorage.instance.ref().child('products').child(productId).child(DateTime.now().microsecondsSinceEpoch.toString());
-
-      UploadTask uploadTask = ref.putFile(unsavedData['images'][i]);
-
-      TaskSnapshot taskSnapshot = await uploadTask;
-      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      unsavedData['images'][i] = downloadUrl;
+      File imageFile = images[i];
+      try {
+        Reference ref = FirebaseStorage.instance.ref().child('products').child(productId).child(DateTime.now().microsecondsSinceEpoch.toString());
+        UploadTask uploadTask = ref.putFile(imageFile);
+        TaskSnapshot taskSnapshot = await uploadTask;
+        String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+        images[i] = downloadUrl;
+      } catch (e) {
+        print("Erro ao fazer upload da imagem: $e"); // Adicione logs para ajudar na depuração
+        rethrow; // Propague o erro para garantir que o produto não seja salvo se o upload falhar
+      }
     }
+    unsavedData['images'] = images; // Atualize o unsavedData com as URLs das imagens
   }
 
   void deleteProduct() {
-    product.reference.delete();
+    if (product != null) {
+      product!.reference.delete();
+    }
   }
 
   @override

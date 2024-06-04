@@ -47,31 +47,34 @@ class OrdersTab extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
-              Icons.view_list,
+              Icons.list,
               size: 80,
               color: Colors.grey,
             ),
             const SizedBox(height: 16),
             const Text(
-              "Faça o login para acompanhar",
-              style: TextStyle(fontSize: 16),
+              'Faça login para adicionar produtos!',
               textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LoginScreen()));
               },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey,
               ),
               child: const Text(
-                "Entrar",
-                style: TextStyle(fontSize: 18),
-                selectionColor: Colors.white,
+                'Entrar',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],
