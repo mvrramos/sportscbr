@@ -30,7 +30,7 @@ class CartScreen extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8),
             alignment: Alignment.center,
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('users').doc(loginBloc.firebaseUser!.uid).collection('cart').snapshots(),
+              stream: FirebaseFirestore.instance.collection('users').doc(loginBloc.firebaseUser?.uid).collection('cart').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
@@ -92,7 +92,45 @@ class CartScreen extends StatelessWidget {
                 }
               },
             )
-          : const LoginScreen(),
+          : Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.shopping_cart,
+                    size: 80,
+                    color: Colors.grey,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Faça login para verificar o carrinho",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                    ),
+                    child: const Text(
+                      "Entrar",
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  )
+                ],
+              ),
+            ),
     );
   }
 }

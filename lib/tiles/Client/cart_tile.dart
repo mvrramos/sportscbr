@@ -23,7 +23,7 @@ class CartTile extends StatelessWidget {
             width: 120,
             child: Image.network(
               cartProduct.productData?.images?[0] ?? '',
-              fit: BoxFit.cover,
+              // fit: BoxFit.cover,
             ),
           ),
           Expanded(

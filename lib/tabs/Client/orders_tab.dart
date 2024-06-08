@@ -53,7 +53,7 @@ class OrdersTab extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text(
-              'Faça login para adicionar produtos!',
+              'Faça login para verificar produtos',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
