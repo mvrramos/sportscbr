@@ -93,13 +93,15 @@ class LoginBloc extends BlocBase with LoginValidator {
     }
   }
 
-  Future<bool> verifyPrivileges(User user) async {
+  verifyPrivileges(User user) async {
     try {
       DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('admins').doc(user.uid).get();
-
-      return snapshot.exists;
+      if (snapshot.exists) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (error) {
-      print("Erro ao verificar privilégios: $error");
       return false;
     }
   }
@@ -197,12 +199,9 @@ class LoginBloc extends BlocBase with LoginValidator {
 
   @override
   void dispose() {
-    // _emailController.close();
-    // _passwordController.close();
     _stateController.close();
     _streamSubscription.cancel();
     _ordersController.close();
-    // _isLoadingController.close();
     super.dispose();
   }
 }

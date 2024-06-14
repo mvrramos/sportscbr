@@ -124,7 +124,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         ? () {
                             if (_loginBloc.isLoggedIn()) {
                               CartProduct cartProduct = CartProduct();
-                              cartProduct.size = size!;
+                              cartProduct.sizes = size!;
                               cartProduct.quantity = 1;
                               cartProduct.pid = widget.product.id;
                               cartProduct.category = widget.product.category;

@@ -18,7 +18,7 @@ class CartPrice extends StatelessWidget {
           children: [
             const Text(
               "Resumo do Pedido",
-              textAlign: TextAlign.start,
+              textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 12),
@@ -26,7 +26,7 @@ class CartPrice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Subtotal"),
-                Text("R\$ ${cartBloc.getProductsPrice().toStringAsFixed(2)}"),
+                Text("R\$ ${cartBloc.getProductsPrice()}"),
               ],
             ),
             const Divider(),
@@ -34,7 +34,7 @@ class CartPrice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Desconto"),
-                Text("R\$ ${cartBloc.getDiscountPrice().toStringAsFixed(2)}"),
+                Text("R\$ ${cartBloc.getDiscountPrice()}"),
               ],
             ),
             const Divider(),
@@ -42,7 +42,7 @@ class CartPrice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text("Entrega"),
-                Text("R\$ ${cartBloc.getShipPrice().toStringAsFixed(2)}"),
+                Text("R\$ ${cartBloc.getShipPrice()}"),
               ],
             ),
             const Divider(),

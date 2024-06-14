@@ -27,9 +27,9 @@ class DiscountCard extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             child: TextFormField(
               decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "Digite o seu cupom"),
-              initialValue: cartBloc.couponCode, // Use o couponCode do CartBloc
+              initialValue: cartBloc.couponCode,
               onFieldSubmitted: (text) {
-                cartBloc.setCoupon(text, 0); // Defina o desconto como 0 temporariamente
+                cartBloc.setCoupon(text, 0);
                 FirebaseFirestore.instance.collection('cupons').doc(text).get().then((docSnap) {
                   if (docSnap.data() != null) {
                     int percent = docSnap.get('percent') ?? 0;

@@ -79,13 +79,11 @@ class CartScreen extends StatelessWidget {
                       const ShipCard(),
                       CartPrice(cartBloc, () async {
                         String? orderId = await cartBloc.finishOrder();
-                        if (orderId != null) {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => OrderScreen(orderId),
-                            ),
-                          );
-                        }
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => OrderScreen(orderId!),
+                          ),
+                        );
                       }),
                     ],
                   );

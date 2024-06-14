@@ -27,8 +27,8 @@ class AdminCategoryBloc extends BlocBase {
   Stream<bool> get submitValid => Rx.combineLatest2(outTitle, outDelete, (title, delete) => title != null && delete != null);
 
   DocumentSnapshot? category;
-  late File image;
-  late String title;
+  File? image;
+  String? title;
 
   AdminCategoryBloc(this.category) {
     if (category != null) {
@@ -64,7 +64,7 @@ class AdminCategoryBloc extends BlocBase {
     Map<String, dynamic> dataToUpdate = {};
 
     if (image != null) {
-      UploadTask task = FirebaseStorage.instance.ref().child('icons').child(title).putFile(image);
+      UploadTask task = FirebaseStorage.instance.ref().child('icons').child(title!).putFile(image!);
 
       TaskSnapshot snap = await task;
       dataToUpdate['icon'] = await snap.ref.getDownloadURL();
@@ -75,7 +75,7 @@ class AdminCategoryBloc extends BlocBase {
     }
 
     if (category == null) {
-      await FirebaseFirestore.instance.collection('products').doc(title.toLowerCase()).set(dataToUpdate);
+      await FirebaseFirestore.instance.collection('products').doc(title?.toLowerCase()).set(dataToUpdate);
     } else {
       await category?.reference.update(dataToUpdate);
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sportscbr/screens/Client/cart_screen.dart';
+import 'package:sportscbr/screens/Client/profile_screen.dart';
 import 'package:sportscbr/tabs/Client/home_tab.dart';
 import 'package:sportscbr/tabs/Client/orders_tab.dart';
 import 'package:sportscbr/tabs/Client/places_tab.dart';
@@ -44,6 +45,11 @@ class DrawerTile extends StatelessWidget {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const CartScreen(),
               ));
+            case 5:
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const ProfileScreen(),
+              ));
+              break;
             default:
           }
         },

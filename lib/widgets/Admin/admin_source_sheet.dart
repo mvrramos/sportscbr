@@ -7,7 +7,7 @@ class AdminImageSourceSheet extends StatelessWidget {
   final Function(XFile) onImageSelected;
 
   void imageSelected(XFile image) async {
-    final CroppedFile? croppedImage = await ImageCropper().cropImage(sourcePath: image.path, maxHeight: 1, maxWidth: 1);
+    final CroppedFile? croppedImage = await ImageCropper().cropImage(sourcePath: image.path);
 
     XFile? finalImage;
     if (croppedImage != null) {

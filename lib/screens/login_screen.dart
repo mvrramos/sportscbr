@@ -14,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _loginBloc = LoginBloc();
-  // final _adminUsersBloc = AdminUsersBloc();
 
   @override
   void initState() {
@@ -106,9 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onPressed: snapshot.hasData
                                     ? () async {
                                         _loginBloc.submit();
-                                        // String? uid = FirebaseAuth.instance.currentUser?.uid;
 
-                                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                        Navigator.of(context).push(MaterialPageRoute(
                                           builder: (context) => HomeScreen(),
                                         ));
                                       }

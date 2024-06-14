@@ -26,7 +26,7 @@ class PlacesTab extends StatelessWidget {
           return Scaffold(
             backgroundColor: Colors.black,
             appBar: AppBar(
-              backgroundColor: const Color.fromARGB(100, 73, 5, 182),
+              backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               title: const Text("Minha loja"),
             ),

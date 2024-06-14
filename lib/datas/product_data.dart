@@ -21,6 +21,7 @@ class ProductData {
     sizes = snapshot.get('sizes');
   }
 
+//resumo dos produtos - visto nos pedidos/carrinho
   Map<String, dynamic> toResumeMap() {
     return {
       'title': title,

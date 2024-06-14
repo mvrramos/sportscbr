@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sportscbr/blocs/Admin/admin_users_bloc.dart';
 import 'package:sportscbr/blocs/Client/cart_bloc.dart';
 import 'package:sportscbr/blocs/Client/login_bloc.dart';
+import 'package:sportscbr/blocs/Client/profile_bloc.dart';
 import 'package:sportscbr/firebase_options.dart';
 import 'package:sportscbr/screens/Client/home_screen.dart';
 
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
           create: (_) => CartBloc(loginBloc),
           dispose: (_, cartBloc) => cartBloc.dispose(),
         ),
+        Provider<ProfileBloc>(create: (_) => ProfileBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

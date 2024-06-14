@@ -58,9 +58,8 @@ class CategoryScreen extends StatelessWidget {
                     ),
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      //passa cada documento atraves do index, tranforma em um objeto, passa para o ProductTile
                       ProductData data = ProductData.fromDocument(snapshot.data!.docs[index]);
-                      data.category = this.snapshot.id; //passando a catergoria do documento(produto)
+                      data.category = this.snapshot.id;
                       return ProductTile(
                         "grid",
                         data,

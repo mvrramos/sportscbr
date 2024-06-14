@@ -14,16 +14,15 @@ class CartTile extends StatelessWidget {
     final cartBloc = Provider.of<CartBloc>(context);
     cartBloc.updatePrices();
 
-    Widget buildContent() {
+    Widget buildContent(ProductData productData) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            width: 120,
+            width: 110,
             child: Image.network(
-              cartProduct.productData?.images?[0] ?? '',
-              // fit: BoxFit.cover,
+              productData.images![0],
             ),
           ),
           Expanded(
@@ -34,18 +33,18 @@ class CartTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "${cartProduct.productData?.title}",
+                    productData.title ?? 'Produto sem título',
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 17,
                     ),
                   ),
                   Text(
-                    "Tamanho ${cartProduct.size}",
+                    "Tamanho ${cartProduct.sizes}",
                     style: const TextStyle(fontWeight: FontWeight.w300),
                   ),
                   Text(
-                    "R\$ ${cartProduct.productData?.price ?? '0'}",
+                    "R\$ ${productData.price?.toStringAsFixed(2) ?? '0.00'}",
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -69,7 +68,7 @@ class CartTile extends StatelessWidget {
                         onPressed: () => cartBloc.removeCartItem(cartProduct),
                         child: const Text(
                           "Remover",
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(color: Colors.grey, fontSize: 14),
                         ),
                       ),
                     ],
@@ -85,9 +84,9 @@ class CartTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: cartProduct.productData == null
-          ? buildContent()
-          : FutureBuilder<DocumentSnapshot>(
-              future: FirebaseFirestore.instance.collection('products').doc(cartProduct.category).collection('cart').doc(cartProduct.pid).get(),
+          ? FutureBuilder<DocumentSnapshot>(
+              // Caso ainda não tenha os dados, recarrega os itens
+              future: FirebaseFirestore.instance.collection('products').doc(cartProduct.category).collection(cartProduct.category!).doc(cartProduct.pid).get(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
@@ -95,24 +94,25 @@ class CartTile extends StatelessWidget {
                     alignment: Alignment.center,
                     child: const CircularProgressIndicator(),
                   );
-                } else if (snapshot.hasData) {
+                } else if (snapshot.hasError) {
+                  return Container(
+                    height: 70,
+                    alignment: Alignment.center,
+                    child: const Text('Erro ao carregar produto'),
+                  );
+                } else if (snapshot.hasData && snapshot.data!.exists) {
                   cartProduct.productData = ProductData.fromDocument(snapshot.data!);
-                  return buildContent();
+                  return buildContent(cartProduct.productData!);
                 } else {
                   return Container(
                     height: 70,
                     alignment: Alignment.center,
-                    child: const Text(
-                      'Produto não encontrado',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: const Text('Produto não encontrado'),
                   );
                 }
               },
-            ),
+            )
+          : buildContent(cartProduct.productData!),
     );
   }
 }

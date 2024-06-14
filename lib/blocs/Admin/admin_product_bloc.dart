@@ -29,7 +29,7 @@ mixin AdminProductValidator {
   }
 }
 
-class AdminProductBloc extends BlocBase with AdminProductValidator {
+  class AdminProductBloc extends BlocBase with AdminProductValidator {
   final _dataController = BehaviorSubject<Map<String, dynamic>>();
   Stream<Map<String, dynamic>> get outData => _dataController.stream;
 
@@ -101,26 +101,25 @@ class AdminProductBloc extends BlocBase with AdminProductValidator {
       return true;
     } catch (e) {
       _loadingController.add(false);
-      print("Erro ao salvar produto: $e"); // Adicione logs para ajudar na depuração
       return false;
     }
   }
 
-  Future<void> _uploadImages(String productId) async {
+  Future<void> _uploadImages(String path) async {
     List<dynamic> images = unsavedData['images'];
+
     for (var i = 0; i < images.length; i++) {
       if (images[i] is String) continue;
 
-      File imageFile = images[i];
+      File imageFile = File(images[i]);
       try {
-        Reference ref = FirebaseStorage.instance.ref().child('products').child(productId).child(DateTime.now().microsecondsSinceEpoch.toString());
+        Reference ref = FirebaseStorage.instance.ref().child('products').child(path).child(DateTime.now().microsecondsSinceEpoch.toString());
         UploadTask uploadTask = ref.putFile(imageFile);
         TaskSnapshot taskSnapshot = await uploadTask;
         String downloadUrl = await taskSnapshot.ref.getDownloadURL();
         images[i] = downloadUrl;
       } catch (e) {
-        print("Erro ao fazer upload da imagem: $e"); // Adicione logs para ajudar na depuração
-        rethrow; // Propague o erro para garantir que o produto não seja salvo se o upload falhar
+        rethrow;
       }
     }
     unsavedData['images'] = images; // Atualize o unsavedData com as URLs das imagens

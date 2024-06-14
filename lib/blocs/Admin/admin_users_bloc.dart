@@ -87,7 +87,6 @@ class AdminUsersBloc extends BlocBase {
       await _auth.signOut();
     } catch (e) {
       print("Erro ao fazer logout: $e");
-      // Exibir mensagem de erro para o usuário
     }
   }
 

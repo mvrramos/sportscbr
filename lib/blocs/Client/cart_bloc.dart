@@ -32,17 +32,16 @@ class CartBloc extends BlocBase {
     notifyListeners();
   }
 
-  Future<void> addCartItem(CartProduct cartProduct) async {
-    products.add(cartProduct); //adiconando produtos ao carrinho
+  void addCartItem(CartProduct cartProduct) async {
+    products.add(cartProduct); 
     FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').add(cartProduct.toMap()).then((doc) {
-      //pegando o id do cart
       cartProduct.cid = doc.id;
     });
     notifyListeners();
   }
 
-  Future<void> removeCartItem(CartProduct cartProduct) async {
-    //tirando produtos do carrinho
+  void removeCartItem(CartProduct cartProduct) async {
+    
     FirebaseFirestore.instance.collection('users').doc(user.firebaseUser!.uid).collection('cart').doc(cartProduct.cid).delete();
 
     products.remove(cartProduct);
@@ -52,7 +51,7 @@ class CartBloc extends BlocBase {
   void updateCartItem(CartProduct cartProduct) async {
     try {
       await _firestore.collection('users').doc(user.firebaseUser!.uid).collection('cart').doc(cartProduct.cid).update(cartProduct.toMap());
-      _productsController.add(List.from(products)); // Notificar os ouvintes
+      _productsController.add(List.from(products));
     } catch (e) {
       print("Erro ao atualizar item do carrinho: $e");
     }

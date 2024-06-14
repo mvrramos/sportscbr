@@ -40,7 +40,6 @@ class AdminCategoryTile extends StatelessWidget {
                 } else {
                   return Column(
                     children: snapshot.data!.docs.map((doc) {
-                      // Acessa o campo 'images' do documento
                       final List<dynamic>? images = doc['images'];
                       if (images != null && images.isNotEmpty) {
                         final String imageUrl = images[0];

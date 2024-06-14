@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sportscbr/datas/product_data.dart';
 
 class CartProduct {
-  String? cid; //cardId
+  String? cid;
 
   String? category;
-  String? pid; //productId
+  String? pid;
 
   int? quantity;
-  String? size;
+  String? sizes;
 
   ProductData? productData;
 
@@ -19,16 +19,17 @@ class CartProduct {
     category = document.get('category');
     pid = document.get('pid');
     quantity = document.get('quantity');
-    size = document.get('size');
+    sizes = document.get('sizes');
   }
 
+  //pega o objeto e tranforma em mapa para armazaenar no Firebase
   Map<String, dynamic> toMap() {
     return {
       'category': category,
       'pid': pid,
       'quantity': quantity,
-      'size': size,
-      'product': productData?.toResumeMap()
+      'sizes': sizes,
+      'product': productData!.toResumeMap() //guarda apenas o resumo dos produtos adicionados
     };
   }
 }
